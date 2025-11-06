@@ -77,6 +77,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'Modelos', #Nombre de la base de datos
+        'PASSWORD': 'Eternity', #contraseña de la base de datos/puede cambiar para el equipo 
+        'HOST': 'localhost', #para postgresql 
+        'PORT': '3306',
     }
 }
 

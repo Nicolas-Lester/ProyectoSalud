@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 
+#Clase para almacenar comentarios con su fecha, texto y etiqueta de sentimiento
 class Comment(models.Model):
     fecha = models.DateField(null=True, blank=True)
     texto = models.TextField()
