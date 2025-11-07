@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacer Predicción - Sistema IA</title>
+    <link rel="stylesheet" href="{% static 'prediccion/css/prediccion.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>🏥 Sistema de Salud - IA</h1>
+            <div class="nav-links">
+                <a href="{% url 'index' %}">🏠 Inicio</a>
+                <a href="/prediccion/">📊 Dashboard</a>
+                <a href="/rutas/">🗺️ Rutas</a>
+                <a href="{% url 'sentimientos_home' %}">🤖 Sentimientos</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>🔮 Predecir Demanda de Pacientes</h2>
+            <p>Ingresa una fecha para predecir cuántos pacientes habrá</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulario de predicción -->
+        <div class="form-card">
+            <h3>📅 Configurar Predicción</h3>
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" 
+                               name="fecha" 
+                               id="fecha" 
+                               required 
+                               min="{{ fecha_minima }}"
+                               value="{% now 'Y-m-d' %}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Predicción:</label>
+                        <select name="tipo" id="tipo">
+                            <option value="dia">Un solo día</option>
+                            <option value="semana">Semana completa (7 días)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="es_feriado" id="es_feriado">
+                        <span>¿Es feriado?</span>
+                    </label>
+                    <p class="help-text">Los feriados típicamente tienen menos demanda</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    🔮 Generar Predicción
+                </button>
+            </form>
+        </div>
+
+        <!-- Resultados de predicción -->
+        {% if predicciones %}
+        <div class="results-section">
+            <h3>✨ Resultados de la Predicción</h3>
+            
+            {% if predicciones|length == 1 %}
+                <!-- Predicción de un solo día -->
+                {% for pred in predicciones %}
+                <div class="prediction-card single">
+                    <div class="pred-header">
+                        <div class="pred-date">
+                            <span class="date-day">{{ pred.dia_nombre }}</span>
+                            <span class="date-full">{{ pred.fecha }}</span>
+                        </div>
+                        <div class="pred-badge {% if pred.es_feriado %}holiday{% endif %}">
+                            {% if pred.es_feriado %}🎉 Feriado{% else %}📅 Día Normal{% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="pred-result">
+                        <div class="result-icon">👥</div>
+                        <div class="result-number">{{ pred.pacientes_predichos }}</div>
+                        <div class="result-label">Pacientes Esperados</div>
+                    </div>
+
+                    <div class="pred-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Día de la semana:</span>
+                            <span class="detail-value">{{ pred.dia_nombre }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Mes:</span>
+                            <span class="detail-value">Mes {{ pred.mes }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Tipo de día:</span>
+                            <span class="detail-value">
+                                {% if pred.es_feriado %}Feriado{% else %}Laboral{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <!-- Predicción de semana completa -->
+                <div class="week-predictions">
+                    <div class="week-summary">
+                        <h4>📊 Resumen Semanal</h4>
+                        {% with total=predicciones|length %}
+                        {% with sum_pacientes=0 %}
+                        {% for pred in predicciones %}
+                            {% with sum_pacientes=sum_pacientes|add:pred.pacientes_predichos %}{% endwith %}
+                        {% endfor %}
+                        <div class="summary-stats">
+                            <div class="stat">
+                                <span class="stat-label">Total Semana:</span>
+                                <span class="stat-value">
+                                    {% widthratio predicciones|length 1 1 %} días
+                                </span>
+                            </div>
+                        </div>
+                        {% endwith %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="week-grid">
+                        {% for pred in predicciones %}
+                        <div class="day-card">
+                            <div class="day-header">
+                                <span class="day-name">{{ pred.dia_nombre }}</span>
+                                <span class="day-date">{{ pred.fecha|date:"d/m" }}</span>
+                            </div>
+                            <div class="day-prediction">
+                                <span class="prediction-number">{{ pred.pacientes_predichos }}</span>
+                                <span class="prediction-label">pacientes</span>
+                            </div>
+                            {% if pred.es_feriado %}
+                            <div class="day-badge holiday">Feriado</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Explicación del proceso -->
+            <div class="explanation-card">
+                <h4>🧠 ¿Cómo se calculó esta predicción?</h4>
+                <ol class="process-steps">
+                    <li>
+                        <strong>Entrada de datos:</strong> Se extrajo el día de la semana, mes y si es feriado
+                    </li>
+                    <li>
+                        <strong>Normalización:</strong> Los datos se escalaron usando StandardScaler
+                    </li>
+                    <li>
+                        <strong>Modelo de regresión:</strong> Se aplicó la fórmula:
+                        <code>y = β₀ + β₁·día + β₂·mes + β₃·feriado</code>
+                    </li>
+                    <li>
+                        <strong>Resultado:</strong> El modelo predijo el número de pacientes esperados
+                    </li>
+                </ol>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Información adicional -->
+        <div class="info-panel">
+            <h4>💡 Consejos para mejores predicciones:</h4>
+            <ul>
+                <li>Los lunes suelen tener mayor demanda (acumulación del fin de semana)</li>
+                <li>Los fines de semana típicamente tienen menos pacientes</li>
+                <li>Los feriados reducen la demanda aproximadamente un 40%</li>
+                <li>El verano (Enero-Febrero) suele tener mayor afluencia</li>
+                <li>El modelo mejora con más datos históricos</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sistema de Predicción de Demanda | Proyecto IA 2025</p>
+    </footer>
+</body>
+</html>

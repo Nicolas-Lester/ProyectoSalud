@@ -1,0 +1,385 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-content h1 {
+    color: #667eea;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links a {
+    color: #333;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.nav-links a:hover {
+    background: #667eea;
+    color: white;
+}
+
+.nav-links a.active {
+    background: #667eea;
+    color: white;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.form-card, .result-card, .info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.form-card h3, .result-card h3, .info-card h3 {
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.alert-error {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.result-card.success {
+    border-left: 5px solid #4caf50;
+}
+
+.result-card.error {
+    border-left: 5px solid #f44336;
+}
+
+.result-summary {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.stat-box.highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.ruta-visual {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.ruta-visual h4 {
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.camino {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+}
+
+.nodo {
+    background: white;
+    border: 3px solid #667eea;
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 150px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nodo .numero {
+    display: block;
+    background: #667eea;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 0 auto 0.5rem;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.nodo .nombre {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+.flecha {
+    font-size: 2rem;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.pasos-algoritmo {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #fff8e1;
+    border-radius: 10px;
+}
+
+.pasos-algoritmo h4 {
+    color: #f57c00;
+    margin-bottom: 1rem;
+}
+
+.explicacion {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.tabla-pasos {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tabla-pasos thead {
+    background: #667eea;
+    color: white;
+}
+
+.tabla-pasos th,
+.tabla-pasos td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.tabla-pasos tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.nodo-nombre {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.explicacion-seleccion {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.explicacion-seleccion h4 {
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.explicacion-seleccion ol {
+    padding-left: 1.5rem;
+    line-height: 1.8;
+}
+
+.explicacion-seleccion li {
+    margin-bottom: 0.5rem;
+}
+
+.ubicaciones-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem;
+    list-style: none;
+    margin: 1rem 0;
+}
+
+.ubicaciones-lista li {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.info-algoritmo {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+}
+
+.info-algoritmo h4 {
+    color: #1976d2;
+    margin-bottom: 0.5rem;
+}
+
+.info-algoritmo p {
+    line-height: 1.6;
+}
+
+footer {
+    background: rgba(255, 255, 255, 0.95);
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+footer p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .nav-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .camino {
+        flex-direction: column;
+    }
+    
+    .flecha {
+        transform: rotate(90deg);
+    }
+    
+    .result-summary {
+        flex-direction: column;
+    }
+}

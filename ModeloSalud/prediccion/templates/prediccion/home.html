@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Demanda - Sistema IA</title>
+    <link rel="stylesheet" href="{% static 'prediccion/css/prediccion.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>🏥 Sistema de Salud - IA</h1>
+            <div class="nav-links">
+                <a href="{% url 'index' %}">🏠 Inicio</a>
+                <a href="/prediccion/" class="active">📊 Predicción de Demanda</a>
+                <a href="/rutas/">🗺️ Rutas</a>
+                <a href="{% url 'sentimientos_home' %}">🤖 Sentimientos</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>📊 Predicción de Demanda de Pacientes</h2>
+            <p>Sistema de regresión lineal para predecir afluencia diaria/semanal</p>
+        </div>
+
+        <!-- Mensajes -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Estado del modelo -->
+        <div class="status-card">
+            <div class="status-icon">
+                {% if modelo_entrenado %}
+                    ✅
+                {% else %}
+                    ⚠️
+                {% endif %}
+            </div>
+            <div class="status-info">
+                <h3>
+                    {% if modelo_entrenado %}
+                        Modelo Entrenado y Listo
+                    {% else %}
+                        Modelo No Entrenado
+                    {% endif %}
+                </h3>
+                <p>Registros históricos: {{ total_registros }}</p>
+            </div>
+        </div>
+
+        <!-- Grid de acciones -->
+        <div class="actions-grid">
+            <div class="action-card">
+                <div class="card-icon">📥</div>
+                <h3>Generar Datos</h3>
+                <p>Crea datos históricos de ejemplo (90 días) con patrones realistas</p>
+                <a href="{% url 'generar_datos' %}" class="btn btn-primary">Generar Datos</a>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">🧠</div>
+                <h3>Entrenar Modelo</h3>
+                <p>Entrena el modelo de regresión lineal con los datos históricos</p>
+                <a href="{% url 'entrenar_prediccion' %}" class="btn btn-success">Entrenar Modelo</a>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">🔮</div>
+                <h3>Hacer Predicción</h3>
+                <p>Predice demanda para fechas futuras (día o semana completa)</p>
+                <a href="{% url 'hacer_prediccion' %}" class="btn btn-info {% if not modelo_entrenado %}disabled{% endif %}">
+                    Predecir
+                </a>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">📈</div>
+                <h3>Ver Histórico</h3>
+                <p>Consulta los datos históricos de demanda registrados</p>
+                <a href="{% url 'ver_historico' %}" class="btn btn-secondary">Ver Histórico</a>
+            </div>
+        </div>
+
+        <!-- Ultimos registros -->
+        {% if ultimos_registros %}
+        <div class="recent-card">
+            <h3>📅 Últimos 7 Días Registrados</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Día</th>
+                        <th>Pacientes</th>
+                        <th>Feriado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in ultimos_registros %}
+                    <tr>
+                        <td>{{ registro.fecha }}</td>
+                        <td>
+                            {% if registro.dia_semana == 0 %}Lunes
+                            {% elif registro.dia_semana == 1 %}Martes
+                            {% elif registro.dia_semana == 2 %}Miércoles
+                            {% elif registro.dia_semana == 3 %}Jueves
+                            {% elif registro.dia_semana == 4 %}Viernes
+                            {% elif registro.dia_semana == 5 %}Sábado
+                            {% else %}Domingo{% endif %}
+                        </td>
+                        <td><strong>{{ registro.pacientes }}</strong></td>
+                        <td>{% if registro.es_feriado %}Sí{% else %}No{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- Información del algoritmo -->
+        <div class="info-section">
+            <h3>ℹ️ Sobre el Modelo de Predicción</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>🎯 Algoritmo</h4>
+                    <p><strong>Regresión Lineal Múltiple</strong> - Predice valores numéricos continuos</p>
+                </div>
+                <div class="info-box">
+                    <h4>📊 Variables</h4>
+                    <p>Día de la semana, Mes, Feriado → Predicción de pacientes</p>
+                </div>
+                <div class="info-box">
+                    <h4>🔬 Tipo de Aprendizaje</h4>
+                    <p><strong>Supervisado</strong> - Aprende de datos históricos etiquetados</p>
+                </div>
+                <div class="info-box">
+                    <h4>✅ Ventajas</h4>
+                    <p>Rápido, interpretable, ideal para relaciones lineales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sistema de Predicción de Demanda | Proyecto IA 2025</p>
+    </footer>
+</body>
+</html>

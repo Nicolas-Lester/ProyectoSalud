@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización de Rutas - Insumos Médicos</title>
+    <link rel="stylesheet" href="{% static 'rutas/css/rutas.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>🏥 Sistema de Salud - IA</h1>
+            <div class="nav-links">
+                <a href="{% url 'index' %}">🏠 Inicio</a>
+                <a href="/rutas/" class="active">🗺️ Optimización de Rutas</a>
+                <a href="{% url 'sentimientos_home' %}">🤖 Análisis de Sentimientos</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>🗺️ Optimización de Rutas de Insumos Médicos</h2>
+            <p>Algoritmo A* (A Estrella) para encontrar la ruta más corta</p>
+        </div>
+
+        <!-- Formulario para calcular ruta -->
+        <div class="form-card">
+            <h3>📍 Selecciona Origen y Destino</h3>
+            <form method="POST" action="{% url 'calcular_ruta' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="origen">🏥 Ubicación de Origen:</label>
+                    <select name="origen" id="origen" required>
+                        <option value="">-- Selecciona origen --</option>
+                        {% for ubicacion in ubicaciones %}
+                            <option value="{{ ubicacion }}" {% if origen == ubicacion %}selected{% endif %}>
+                                {{ ubicacion }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="destino">🏭 Ubicación de Destino:</label>
+                    <select name="destino" id="destino" required>
+                        <option value="">-- Selecciona destino --</option>
+                        {% for ubicacion in ubicaciones %}
+                            <option value="{{ ubicacion }}" {% if destino == ubicacion %}selected{% endif %}>
+                                {{ ubicacion }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary">🔍 Calcular Ruta Óptima</button>
+            </form>
+
+            {% if error %}
+                <div class="alert alert-error">
+                    ⚠️ {{ error }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Resultados -->
+        {% if resultado %}
+            {% if resultado.exito %}
+                <div class="result-card success">
+                    <h3>✅ Ruta Óptima Encontrada</h3>
+                    
+                    <div class="result-summary">
+                        <div class="stat-box">
+                            <span class="stat-label">Origen</span>
+                            <span class="stat-value">{{ origen }}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">➔</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Destino</span>
+                            <span class="stat-value">{{ destino }}</span>
+                        </div>
+                        <div class="stat-box highlight">
+                            <span class="stat-label">Distancia Total</span>
+                            <span class="stat-value">{{ resultado.costo_total }} km</span>
+                        </div>
+                    </div>
+
+                    <div class="ruta-visual">
+                        <h4>📍 Recorrido Paso a Paso:</h4>
+                        <div class="camino">
+                            {% for ubicacion in resultado.camino %}
+                                <div class="nodo">
+                                    <span class="numero">{{ forloop.counter }}</span>
+                                    <span class="nombre">{{ ubicacion }}</span>
+                                </div>
+                                {% if not forloop.last %}
+                                    <div class="flecha">→</div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="pasos-algoritmo">
+                        <h4>🔍 Proceso del Algoritmo A* (Pasos de Exploración):</h4>
+                        <p class="explicacion">
+                            El algoritmo A* explora los nodos más prometedores primero, 
+                            usando la fórmula: <strong>f(n) = g(n) + h(n)</strong><br>
+                            • <strong>g(n)</strong> = Costo real desde el origen<br>
+                            • <strong>h(n)</strong> = Heurística (estimación al destino)<br>
+                            • <strong>f(n)</strong> = Costo total estimado
+                        </p>
+                        
+                        <table class="tabla-pasos">
+                            <thead>
+                                <tr>
+                                    <th>Paso</th>
+                                    <th>Nodo Explorado</th>
+                                    <th>Costo Acumulado g(n)</th>
+                                    <th>Heurística h(n)</th>
+                                    <th>Total Estimado f(n)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for paso in resultado.pasos %}
+                                    <tr>
+                                        <td>{{ paso.paso }}</td>
+                                        <td class="nodo-nombre">{{ paso.nodo_explorado }}</td>
+                                        <td>{{ paso.costo_acumulado|floatformat:1 }} km</td>
+                                        <td>{{ paso.heuristica|floatformat:1 }} km</td>
+                                        <td><strong>{{ paso.costo_acumulado|add:paso.heuristica|floatformat:1 }} km</strong></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="explicacion-seleccion">
+                            <h4>📝 Cómo Funciona la Selección de Nodos:</h4>
+                            <ol>
+                                <li><strong>Inicio:</strong> El algoritmo comienza en "{{ origen }}" con costo 0</li>
+                                <li><strong>Exploración:</strong> En cada paso, selecciona el nodo con menor f(n) = g(n) + h(n)</li>
+                                <li><strong>Vecinos:</strong> Examina todos los vecinos del nodo actual</li>
+                                <li><strong>Actualización:</strong> Si encuentra un camino mejor, actualiza los costos</li>
+                                <li><strong>Priorización:</strong> Usa la heurística h(n) para priorizar nodos cercanos al destino</li>
+                                <li><strong>Fin:</strong> Termina cuando alcanza "{{ destino }}" con el costo mínimo</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="result-card error">
+                    <h3>❌ No se encontró una ruta</h3>
+                    <p>{{ resultado.error }}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Información sobre el grafo -->
+        <div class="info-card">
+            <h3>ℹ️ Información del Sistema</h3>
+            <p><strong>Ubicaciones disponibles:</strong> {{ ubicaciones|length }}</p>
+            <ul class="ubicaciones-lista">
+                {% for ubicacion in ubicaciones %}
+                    <li>{{ ubicacion }}</li>
+                {% endfor %}
+            </ul>
+            
+            <div class="info-algoritmo">
+                <h4>🧠 Sobre el Algoritmo A*:</h4>
+                <p>
+                    A* es un algoritmo de búsqueda informada que combina:<br>
+                    • <strong>Dijkstra:</strong> Encuentra el camino más corto garantizado<br>
+                    • <strong>Heurística:</strong> Optimiza la búsqueda priorizando direcciones prometedoras<br>
+                    • <strong>Eficiencia:</strong> Explora menos nodos que una búsqueda exhaustiva
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sistema de Inteligencia Artificial para Optimización de Rutas | Proyecto Salud 2025</p>
+    </footer>
+</body>
+</html>

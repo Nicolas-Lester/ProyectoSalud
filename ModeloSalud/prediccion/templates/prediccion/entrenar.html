@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenar Modelo - Sistema IA</title>
+    <link rel="stylesheet" href="{% static 'prediccion/css/prediccion.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>🏥 Sistema de Salud - IA</h1>
+            <div class="nav-links">
+                <a href="{% url 'index' %}">🏠 Inicio</a>
+                <a href="/prediccion/">📊 Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>🧠 Entrenar Modelo de Predicción</h2>
+            <p>Regresión lineal para predicción de demanda</p>
+        </div>
+
+        <div class="confirm-card">
+            <div class="confirm-icon">🤖</div>
+            <h3>Entrenar modelo de regresión lineal</h3>
+            <p>El proceso de entrenamiento incluye:</p>
+            <ol>
+                <li>Cargar datos históricos de la base de datos</li>
+                <li>Normalizar variables (día, mes, feriado)</li>
+                <li>Entrenar modelo de regresión lineal múltiple</li>
+                <li>Calcular precisión (R² score)</li>
+                <li>Guardar modelo para predicciones futuras</li>
+            </ol>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-large">
+                    Entrenar Modelo
+                </button>
+                <a href="{% url 'prediccion_home' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

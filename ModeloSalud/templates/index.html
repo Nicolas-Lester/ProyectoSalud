@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema IA - Proyecto Salud</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Sistema de Inteligencia Artificial</h1>
+            <p>Proyecto de Optimización para el Sector Salud</p>
+        </div>
+
+        <div class="modules-grid">
+            <!-- Módulo 1: Análisis de Sentimientos -->
+            <div class="module-card">
+                <span class="module-icon">🤖</span>
+                <h2>Análisis de Sentimientos</h2>
+                <p>Red neuronal para clasificación automática de comentarios de pacientes</p>
+                
+                <ul class="features">
+                    <li>Clasificación positivo/negativo</li>
+                    <li>Limpieza automática de texto</li>
+                    <li>Red neuronal con TensorFlow</li>
+                    <li>Búsqueda y filtrado de comentarios</li>
+                </ul>
+
+                <a href="/sentimientos/" class="btn">Ir al Módulo 🚀</a>
+            </div>
+
+            <!-- Módulo 2: Optimización de Rutas -->
+            <div class="module-card">
+                <span class="module-icon">🗺️</span>
+                <h2>Optimización de Rutas</h2>
+                <p>Algoritmo A* para encontrar rutas óptimas de distribución de insumos médicos</p>
+                
+                <ul class="features">
+                    <li>Algoritmo A* (A Estrella)</li>
+                    <li>Búsqueda con heurística</li>
+                    <li>Visualización paso a paso</li>
+                    <li>Cálculo de distancia óptima</li>
+                </ul>
+
+                <a href="/rutas/" class="btn">Ir al Módulo 🚀</a>
+            </div>
+
+            <!-- Módulo 3: Predicción de Demanda -->
+            <div class="module-card">
+                <span class="module-icon">📊</span>
+                <h2>Predicción de Demanda</h2>
+                <p>Regresión lineal para predecir la afluencia de pacientes por día o semana</p>
+                
+                <ul class="features">
+                    <li>Regresión lineal supervisada</li>
+                    <li>Predicción día/semana</li>
+                    <li>Consideración de feriados</li>
+                    <li>Análisis histórico de tendencias</li>
+                </ul>
+
+                <a href="/prediccion/" class="btn">Ir al Módulo 🚀</a>
+            </div>
+        </div>
+
+        <!-- Información del Proyecto -->
+        <div class="info-section">
+            <h3>📊 Sobre el Proyecto</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>🎯 Objetivo</h4>
+                    <p>Implementar soluciones de IA para mejorar la eficiencia en el sector salud</p>
+                </div>
+                <div class="info-box">
+                    <h4>🧠 Tecnologías</h4>
+                    <p>Python, Django, TensorFlow, Algoritmos de búsqueda</p>
+                </div>
+                <div class="info-box">
+                    <h4>📈 Beneficios</h4>
+                    <p>Análisis automático de feedback y optimización de logística</p>
+                </div>
+                <div class="info-box">
+                    <h4>🔬 Metodología</h4>
+                    <p>Aprendizaje supervisado y búsqueda informada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Proyecto de Inteligencia Artificial | 2025</p>
+    </footer>
+</body>
+</html>

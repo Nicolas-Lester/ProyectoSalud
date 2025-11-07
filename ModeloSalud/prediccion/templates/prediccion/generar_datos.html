@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Datos - Sistema IA</title>
+    <link rel="stylesheet" href="{% static 'prediccion/css/prediccion.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>🏥 Sistema de Salud - IA</h1>
+            <div class="nav-links">
+                <a href="{% url 'index' %}">🏠 Inicio</a>
+                <a href="/prediccion/">📊 Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>📥 Generar Datos Históricos</h2>
+            <p>Crea datos de ejemplo para entrenar el modelo</p>
+        </div>
+
+        <div class="confirm-card">
+            <div class="confirm-icon">⚠️</div>
+            <h3>¿Generar datos de ejemplo?</h3>
+            <p>Se crearán 90 registros de demanda simulando patrones realistas:</p>
+            <ul>
+                <li>Lunes con mayor demanda (30-45 pacientes)</li>
+                <li>Fin de semana con menos demanda (15-25 pacientes)</li>
+                <li>Variación por mes (verano con más demanda)</li>
+                <li>Feriados con reducción del 40%</li>
+            </ul>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-large">
+                    Generar Datos
+                </button>
+                <a href="{% url 'prediccion_home' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
