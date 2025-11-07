@@ -1,0 +1,80 @@
+{% extends 'sentimientos/base.html' %}
+
+{% block title %}Inicio - Análisis de Sentimientos{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'sentimientos/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2>Dashboard de Análisis de Sentimientos</h2>
+
+<div class="status-badge {% if modelo_entrenado %}trained{% else %}not-trained{% endif %}">
+    {% if modelo_entrenado %}
+        ✅ Modelo Entrenado
+    {% else %}
+        ❌ Modelo No Entrenado
+    {% endif %}
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ total }}</h3>
+        <p>Total de Comentarios</p>
+    </div>
+    
+    <div class="stat-card positivo">
+        <h3>{{ positivos }}</h3>
+        <p>Comentarios Positivos</p>
+    </div>
+    
+    <div class="stat-card negativo">
+        <h3>{{ negativos }}</h3>
+        <p>Comentarios Negativos</p>
+    </div>
+</div>
+
+<h2>¿Qué deseas hacer?</h2>
+
+<div class="actions">
+    <div class="action-card">
+        <h3>📋 Ver Comentarios</h3>
+        <p>Explora todos los comentarios cargados en el sistema</p>
+        <a href="{% url 'listar_comentarios' %}" class="btn">Ver Comentarios</a>
+    </div>
+    
+    <div class="action-card">
+        <h3>🔍 Buscar</h3>
+        <p>Busca comentarios específicos por texto o sentimiento</p>
+        <a href="{% url 'buscar' %}" class="btn">Buscar</a>
+    </div>
+    
+    <div class="action-card">
+        <h3>🧠 Entrenar Modelo</h3>
+        <p>Entrena el modelo de IA con los datos actuales</p>
+        <a href="{% url 'entrenar' %}" class="btn">Entrenar</a>
+    </div>
+    
+    <div class="action-card">
+        <h3>🎯 Hacer Predicción</h3>
+        <p>Clasifica un nuevo comentario como positivo o negativo</p>
+        <a href="{% url 'predecir' %}" class="btn {% if not modelo_entrenado %}btn-secondary{% endif %}"
+           {% if not modelo_entrenado %}title="Primero debes entrenar el modelo"{% endif %}>
+            Predecir
+        </a>
+    </div>
+</div>
+
+{% if total == 0 %}
+<div style="margin-top: 40px; padding: 30px; background: #fff3cd; border-radius: 15px; border: 2px solid #ffeeba;">
+    <h3 style="color: #856404; margin-bottom: 15px;">⚠️ No hay comentarios cargados</h3>
+    <p style="color: #856404;">Para comenzar, necesitas cargar comentarios desde un archivo CSV.</p>
+    <p style="color: #856404; margin-top: 10px;">Usa el comando:</p>
+    <code style="background: white; padding: 10px; display: block; margin-top: 10px; border-radius: 5px;">
+        python manage.py load_comments --path ruta/al/archivo.csv
+    </code>
+</div>
+{% endif %}
+{% endblock %}

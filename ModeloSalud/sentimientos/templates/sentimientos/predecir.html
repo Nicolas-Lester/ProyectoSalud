@@ -1,0 +1,62 @@
+{% extends 'sentimientos/base.html' %}
+
+{% block title %}Predecir Sentimiento{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'sentimientos/css/predecir.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="predict-container">
+    <h2>🎯 Predecir Sentimiento</h2>
+    
+    <p style="color: #666; margin-bottom: 20px;">
+        Ingresa un comentario y el modelo clasificará si es positivo o negativo.
+    </p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="texto">Comentario del Paciente:</label>
+            <textarea name="texto" id="texto" placeholder="Escribe aquí el comentario que deseas analizar..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; font-size: 18px;">
+            🔮 Analizar Sentimiento
+        </button>
+    </form>
+    
+    <div class="example-texts">
+        <h3>📝 Ejemplos de prueba:</h3>
+        <button onclick="setText('Excelente atención, el doctor fue muy amable y profesional')">Ejemplo Positivo 1</button>
+        <button onclick="setText('Muy buena experiencia, todo el personal muy atento')">Ejemplo Positivo 2</button>
+        <button onclick="setText('Pésimo servicio, tuve que esperar horas y nadie me atendió bien')">Ejemplo Negativo 1</button>
+        <button onclick="setText('Muy mala experiencia, el trato fue horrible')">Ejemplo Negativo 2</button>
+    </div>
+    
+    {% if resultado %}
+    <div class="result-box {{ resultado.etiqueta }}">
+        <h2>
+            {% if resultado.etiqueta == 'positivo' %}
+                😊 POSITIVO
+            {% else %}
+                😞 NEGATIVO
+            {% endif %}
+        </h2>
+        <p>El modelo ha clasificado este comentario como <strong>{{ resultado.etiqueta|upper }}</strong></p>
+        <div class="confidence">
+            Confianza: {{ resultado.confianza|floatformat:2 }}
+            ({{ resultado.confianza|floatformat:0 }}%)
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function setText(text) {
+    document.getElementById('texto').value = text;
+}
+</script>
+{% endblock %}

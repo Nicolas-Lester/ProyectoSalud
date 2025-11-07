@@ -1,0 +1,58 @@
+{% extends 'sentimientos/base.html' %}
+
+{% block title %}Lista de Comentarios{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'sentimientos/css/listar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="header-actions">
+    <h2>📋 Lista de Comentarios</h2>
+    <a href="{% url 'buscar' %}" class="btn">🔍 Buscar Comentarios</a>
+</div>
+
+{% if comentarios %}
+<div class="stats-bar">
+    <div class="stat-item">
+        <strong>Total:</strong> {{ comentarios.count }} comentarios
+    </div>
+    <div class="stat-item">
+        <strong>Mostrando:</strong> Últimos 100 registros
+    </div>
+</div>
+
+<div class="comment-list">
+    {% for comentario in comentarios %}
+    <div class="comment-item">
+        <span class="comment-badge {{ comentario.etiqueta }}">
+            {% if comentario.etiqueta == 'positivo' %}
+                😊 Positivo
+            {% else %}
+                😞 Negativo
+            {% endif %}
+        </span>
+        <div class="comment-text">{{ comentario.texto }}</div>
+        {% if comentario.fecha %}
+        <div class="comment-date">📅 {{ comentario.fecha }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="no-comments">
+    <h3>📭</h3>
+    <p>No hay comentarios cargados en el sistema.</p>
+</div>
+
+<div class="load-info">
+    <h3 style="color: #856404; margin-bottom: 15px;">💡 ¿Cómo cargar comentarios?</h3>
+    <p style="color: #856404;">Necesitas un archivo CSV con las columnas: <strong>fecha, texto, etiqueta</strong></p>
+    <p style="color: #856404; margin-top: 10px;">Ejecuta el siguiente comando en la terminal:</p>
+    <code>python manage.py load_comments --path ruta/al/Comentarios_de_pacientes.csv</code>
+</div>
+{% endif %}
+{% endblock %}

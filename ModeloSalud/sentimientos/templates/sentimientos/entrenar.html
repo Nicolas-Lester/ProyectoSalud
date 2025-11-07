@@ -1,0 +1,46 @@
+{% extends 'sentimientos/base.html' %}
+
+{% block title %}Entrenar Modelo{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'sentimientos/css/entrenar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="train-container">
+    <h2>🧠 Entrenar Modelo de IA</h2>
+    
+    <div class="info-box">
+        <h3>¿Qué hace el entrenamiento?</h3>
+        <p>El modelo de red neuronal aprenderá a clasificar comentarios como positivos o negativos basándose en los datos existentes.</p>
+    </div>
+    
+    <div class="process-steps">
+        <h3>Proceso de Entrenamiento:</h3>
+        <ol>
+            <li><strong>Limpieza de texto:</strong> Se eliminan URLs, caracteres especiales y palabras vacías</li>
+            <li><strong>Vectorización TF-IDF:</strong> Convierte el texto en números que la IA puede procesar</li>
+            <li><strong>División de datos:</strong> 80% para entrenar, 20% para validar</li>
+            <li><strong>Entrenamiento de red neuronal:</strong> Modelo con capas Dense y Dropout</li>
+            <li><strong>Evaluación:</strong> Se calcula la precisión del modelo</li>
+        </ol>
+    </div>
+    
+    <div class="warning-box">
+        <h3>⚠️ Importante</h3>
+        <p>El entrenamiento puede tardar varios minutos dependiendo de la cantidad de datos.</p>
+        <p>Se necesitan al menos 10 comentarios para entrenar el modelo.</p>
+    </div>
+    
+    <form method="post" style="margin-top: 30px;">
+        {% csrf_token %}
+        <button type="submit" class="btn" style="font-size: 18px; padding: 15px 40px;">
+            🚀 Iniciar Entrenamiento
+        </button>
+        <br><br>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

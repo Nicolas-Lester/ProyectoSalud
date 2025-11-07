@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Análisis de Sentimientos{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'sentimientos/css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Análisis de Sentimientos de Pacientes</h1>
+            <p>Sistema de clasificación de comentarios con IA</p>
+        </header>
+        
+        <nav>
+            <a href="{% url 'home' %}">🏠 Inicio</a>
+            <a href="{% url 'listar_comentarios' %}">📋 Comentarios</a>
+            <a href="{% url 'buscar' %}">🔍 Buscar</a>
+            <a href="{% url 'entrenar' %}">🧠 Entrenar Modelo</a>
+            <a href="{% url 'predecir' %}">🎯 Predecir</a>
+        </nav>
+        
+        <main>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% block content %}
+            {% endblock %}
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Sistema de Análisis de Sentimientos - Proyecto IA</p>
+        </footer>
+    </div>
+</body>
+</html>

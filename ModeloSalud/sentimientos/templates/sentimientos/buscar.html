@@ -1,0 +1,81 @@
+{% extends 'sentimientos/base.html' %}
+
+{% block title %}Buscar Comentarios{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'sentimientos/css/buscar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2>🔍 Buscar Comentarios</h2>
+
+<div class="search-box">
+    <form method="get" class="search-form">
+        <div class="form-group">
+            <label for="q">Buscar por texto:</label>
+            <input type="text" 
+                   id="q" 
+                   name="q" 
+                   value="{{ query }}" 
+                   placeholder="Ingresa palabras clave...">
+        </div>
+        
+        <div class="form-group">
+            <label for="filtro">Filtrar por sentimiento:</label>
+            <select id="filtro" name="filtro">
+                <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+                <option value="positivo" {% if filtro == 'positivo' %}selected{% endif %}>Positivos</option>
+                <option value="negativo" {% if filtro == 'negativo' %}selected{% endif %}>Negativos</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn">Buscar</button>
+        {% if query or filtro %}
+        <a href="{% url 'buscar' %}" class="btn btn-secondary">Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if query or filtro %}
+<div class="results-info">
+    <strong>Resultados:</strong> 
+    {{ comentarios.count }} comentario{{ comentarios.count|pluralize }}
+    {% if query %}
+        que contienen "{{ query }}"
+    {% endif %}
+    {% if filtro %}
+        con sentimiento {{ filtro }}
+    {% endif %}
+</div>
+{% endif %}
+
+{% if comentarios %}
+<div class="comment-list">
+    {% for comentario in comentarios %}
+    <div class="comment-item">
+        <span class="comment-badge {{ comentario.etiqueta }}">
+            {% if comentario.etiqueta == 'positivo' %}
+                😊 Positivo
+            {% else %}
+                😞 Negativo
+            {% endif %}
+        </span>
+        <div class="comment-text">{{ comentario.texto }}</div>
+        {% if comentario.fecha %}
+        <div class="comment-date">📅 {{ comentario.fecha }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-results">
+    <h3>🔍</h3>
+    <p>No se encontraron comentarios con los criterios especificados.</p>
+    {% if not query and not filtro %}
+    <p>Usa el formulario de arriba para buscar comentarios.</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

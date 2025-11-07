@@ -1,0 +1,81 @@
+/* Grid de estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.stat-card h3 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.stat-card.positivo {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.negativo {
+    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+}
+
+/* Acciones rápidas */
+.actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.action-card {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s;
+}
+
+.action-card:hover {
+    border-color: #667eea;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.action-card h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.action-card p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Badge de estado del modelo */
+.status-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.status-badge.trained {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.not-trained {
+    background: #f8d7da;
+    color: #721c24;
+}

@@ -1,0 +1,102 @@
+/* Contenedor de predicción */
+.predict-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Caja de resultados */
+.result-box {
+    margin-top: 30px;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.result-box.positivo {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.result-box.negativo {
+    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+    color: white;
+}
+
+.result-box h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.result-box .confidence {
+    font-size: 1.5em;
+    margin-top: 15px;
+}
+
+/* Textos de ejemplo */
+.example-texts {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.example-texts h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.example-texts button {
+    margin: 5px;
+    padding: 8px 15px;
+    background: #e9ecef;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.example-texts button:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
