@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Q
 from .models import Comment
-from . import servicios
+from . import modelo_sentimientos
 import pandas as pd
 
 
@@ -14,7 +14,7 @@ def home(request):
     negativos = Comment.objects.filter(etiqueta="negativo").count()
     
     # Ver si el modelo esta entrenado
-    modelo, _ = servicios.cargar_modelo()
+    modelo, _ = modelo_sentimientos.cargar_modelo()
     modelo_entrenado = modelo is not None
     
     # Enviar datos a la plantilla
@@ -43,7 +43,7 @@ def entrenar(request):
         df = pd.DataFrame(datos)
         
         # Entrenar el modelo
-        resultado = servicios.entrenar_modelo(df)
+        resultado = modelo_sentimientos.entrenar_modelo(df)
         
         # Mostrar mensaje de exito con la precision
         precision = resultado["accuracy_test"]
@@ -65,7 +65,7 @@ def predecir(request):
         # Verificar que no este vacio
         if texto.strip():
             # Hacer la prediccion
-            resultado = servicios.predecir(texto)
+            resultado = modelo_sentimientos.predecir(texto)
             
             # Si hay error, mostrar mensaje
             if not resultado.get('ok'):
