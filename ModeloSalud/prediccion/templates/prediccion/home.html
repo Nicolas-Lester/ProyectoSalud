@@ -89,60 +89,297 @@
             </div>
         </div>
 
-        <!-- Ultimos registros -->
+        <!-- Visualización de datos históricos -->
         {% if ultimos_registros %}
         <div class="recent-card">
             <h3>📅 Últimos 7 Días Registrados</h3>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Día</th>
-                        <th>Pacientes</th>
-                        <th>Feriado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for registro in ultimos_registros %}
-                    <tr>
-                        <td>{{ registro.fecha }}</td>
-                        <td>
-                            {% if registro.dia_semana == 0 %}Lunes
-                            {% elif registro.dia_semana == 1 %}Martes
-                            {% elif registro.dia_semana == 2 %}Miércoles
-                            {% elif registro.dia_semana == 3 %}Jueves
-                            {% elif registro.dia_semana == 4 %}Viernes
-                            {% elif registro.dia_semana == 5 %}Sábado
-                            {% else %}Domingo{% endif %}
-                        </td>
-                        <td><strong>{{ registro.pacientes }}</strong></td>
-                        <td>{% if registro.es_feriado %}Sí{% else %}No{% endif %}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            
+            <!-- Gráfico de barras visual -->
+            <div class="chart-container">
+                <canvas id="chartHistorico" width="800" height="300"></canvas>
+            </div>
+
+            <!-- Tabla de datos -->
+            <details class="data-details">
+                <summary>📊 Ver tabla de datos detallada</summary>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Día</th>
+                            <th>Pacientes</th>
+                            <th>Feriado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registro in ultimos_registros %}
+                        <tr>
+                            <td>{{ registro.fecha }}</td>
+                            <td>
+                                {% if registro.dia_semana == 0 %}Lunes
+                                {% elif registro.dia_semana == 1 %}Martes
+                                {% elif registro.dia_semana == 2 %}Miércoles
+                                {% elif registro.dia_semana == 3 %}Jueves
+                                {% elif registro.dia_semana == 4 %}Viernes
+                                {% elif registro.dia_semana == 5 %}Sábado
+                                {% else %}Domingo{% endif %}
+                            </td>
+                            <td><strong>{{ registro.pacientes }}</strong></td>
+                            <td>{% if registro.es_feriado %}Sí{% else %}No{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </details>
         </div>
+
+        <script>
+            // Datos para el gráfico
+            const datos = [
+                {% for registro in ultimos_registros reversed %}
+                {
+                    fecha: '{{ registro.fecha|date:"d/m" }}',
+                    dia: '{% if registro.dia_semana == 0 %}Lun{% elif registro.dia_semana == 1 %}Mar{% elif registro.dia_semana == 2 %}Mié{% elif registro.dia_semana == 3 %}Jue{% elif registro.dia_semana == 4 %}Vie{% elif registro.dia_semana == 5 %}Sáb{% else %}Dom{% endif %}',
+                    pacientes: {{ registro.pacientes }},
+                    feriado: {% if registro.es_feriado %}true{% else %}false{% endif %}
+                },
+                {% endfor %}
+            ];
+
+            // Dibujar gráfico
+            window.onload = function() {
+                const canvas = document.getElementById('chartHistorico');
+                const ctx = canvas.getContext('2d');
+                
+                const padding = 50;
+                const chartWidth = canvas.width - padding * 2;
+                const chartHeight = canvas.height - padding * 2;
+                
+                // Encontrar máximo para escala
+                const maxPacientes = Math.max(...datos.map(d => d.pacientes));
+                const escalaY = chartHeight / maxPacientes;
+                
+                // Ancho de cada barra
+                const barWidth = chartWidth / datos.length;
+                
+                // Limpiar canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Dibujar título
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Tendencia de Pacientes (Últimos 7 Días)', canvas.width / 2, 25);
+                
+                // Dibujar líneas de referencia
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= 4; i++) {
+                    const y = padding + (chartHeight / 4) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                    
+                    // Etiquetas del eje Y
+                    ctx.fillStyle = '#666';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'right';
+                    const valor = Math.round(maxPacientes * (1 - i / 4));
+                    ctx.fillText(valor, padding - 10, y + 4);
+                }
+                
+                // Dibujar barras
+                datos.forEach((dato, index) => {
+                    const x = padding + index * barWidth + barWidth * 0.1;
+                    const barHeight = dato.pacientes * escalaY;
+                    const y = canvas.height - padding - barHeight;
+                    const actualBarWidth = barWidth * 0.8;
+                    
+                    // Color según si es feriado o no
+                    if (dato.feriado) {
+                        ctx.fillStyle = '#f59e0b';
+                    } else if (dato.dia === 'Sáb' || dato.dia === 'Dom') {
+                        ctx.fillStyle = '#8b5cf6';
+                    } else {
+                        ctx.fillStyle = '#667eea';
+                    }
+                    
+                    // Dibujar barra con bordes redondeados
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, actualBarWidth, barHeight, 5);
+                    ctx.fill();
+                    
+                    // Valor encima de la barra
+                    ctx.fillStyle = '#333';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(dato.pacientes, x + actualBarWidth / 2, y - 5);
+                    
+                    // Etiqueta del día
+                    ctx.fillStyle = '#666';
+                    ctx.font = '11px Arial';
+                    ctx.fillText(dato.dia, x + actualBarWidth / 2, canvas.height - padding + 15);
+                    ctx.fillText(dato.fecha, x + actualBarWidth / 2, canvas.height - padding + 28);
+                });
+                
+                // Leyenda
+                const legendY = canvas.height - 10;
+                const legendItems = [
+                    { color: '#667eea', text: 'Día normal' },
+                    { color: '#8b5cf6', text: 'Fin de semana' },
+                    { color: '#f59e0b', text: 'Feriado' }
+                ];
+                
+                let legendX = padding;
+                legendItems.forEach(item => {
+                    ctx.fillStyle = item.color;
+                    ctx.fillRect(legendX, legendY - 10, 15, 15);
+                    ctx.fillStyle = '#666';
+                    ctx.font = '11px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(item.text, legendX + 20, legendY);
+                    legendX += 120;
+                });
+                
+                // Polyfill para roundRect
+                if (!ctx.roundRect) {
+                    ctx.roundRect = function(x, y, w, h, r) {
+                        this.moveTo(x + r, y);
+                        this.lineTo(x + w - r, y);
+                        this.arcTo(x + w, y, x + w, y + r, r);
+                        this.lineTo(x + w, y + h - r);
+                        this.arcTo(x + w, y + h, x + w - r, y + h, r);
+                        this.lineTo(x + r, y + h);
+                        this.arcTo(x, y + h, x, y + h - r, r);
+                        this.lineTo(x, y + r);
+                        this.arcTo(x, y, x + r, y, r);
+                        this.closePath();
+                    };
+                }
+            };
+        </script>
         {% endif %}
 
-        <!-- Información del algoritmo -->
+        <!-- Explicación visual del modelo -->
         <div class="info-section">
-            <h3>ℹ️ Sobre el Modelo de Predicción</h3>
+            <h3>🧠 ¿Cómo Funciona la Predicción?</h3>
+            
+            <div class="proceso-visual">
+                <div class="paso-proceso">
+                    <div class="paso-numero">1</div>
+                    <div class="paso-contenido">
+                        <h4>📥 Datos Históricos</h4>
+                        <p>Se recopilan datos pasados: día de la semana, mes, si es feriado y cantidad de pacientes</p>
+                        <div class="ejemplo-dato">
+                            <span class="dato-item">Lunes</span>
+                            <span class="dato-item">Marzo</span>
+                            <span class="dato-item">No feriado</span>
+                            <span class="dato-resultado">→ 36 pacientes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flecha-proceso">↓</div>
+
+                <div class="paso-proceso">
+                    <div class="paso-numero">2</div>
+                    <div class="paso-contenido">
+                        <h4>🧮 Entrenamiento del Modelo</h4>
+                        <p>El algoritmo aprende patrones: "Los lunes hay más pacientes", "Los feriados hay menos"</p>
+                        <div class="formula-visual">
+                            <span class="formula-texto">Pacientes = </span>
+                            <span class="formula-var">Base</span>
+                            <span class="formula-texto"> + </span>
+                            <span class="formula-var">Efecto_Día</span>
+                            <span class="formula-texto"> + </span>
+                            <span class="formula-var">Efecto_Mes</span>
+                            <span class="formula-texto"> - </span>
+                            <span class="formula-var">Efecto_Feriado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flecha-proceso">↓</div>
+
+                <div class="paso-proceso">
+                    <div class="paso-numero">3</div>
+                    <div class="paso-contenido">
+                        <h4>🔮 Predicción Nueva</h4>
+                        <p>Dado un nuevo día, el modelo calcula cuántos pacientes habrá</p>
+                        <div class="ejemplo-prediccion">
+                            <div class="pred-input">
+                                <strong>Entrada:</strong> Martes, Noviembre, Feriado
+                            </div>
+                            <div class="pred-arrow">→</div>
+                            <div class="pred-output">
+                                <strong>Predicción:</strong> ~18 pacientes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del algoritmo en grid -->
             <div class="info-grid">
                 <div class="info-box">
-                    <h4>🎯 Algoritmo</h4>
-                    <p><strong>Regresión Lineal Múltiple</strong> - Predice valores numéricos continuos</p>
+                    <div class="info-icon">🎯</div>
+                    <h4>Algoritmo</h4>
+                    <p><strong>Regresión Lineal Múltiple</strong></p>
+                    <p class="info-desc">Encuentra la mejor línea que se ajusta a los datos históricos</p>
                 </div>
                 <div class="info-box">
-                    <h4>📊 Variables</h4>
-                    <p>Día de la semana, Mes, Feriado → Predicción de pacientes</p>
+                    <div class="info-icon">📊</div>
+                    <h4>Variables de Entrada</h4>
+                    <p><strong>3 factores principales:</strong></p>
+                    <ul class="variables-list">
+                        <li>Día de la semana (0-6)</li>
+                        <li>Mes del año (1-12)</li>
+                        <li>¿Es feriado? (Sí/No)</li>
+                    </ul>
                 </div>
                 <div class="info-box">
-                    <h4>🔬 Tipo de Aprendizaje</h4>
-                    <p><strong>Supervisado</strong> - Aprende de datos históricos etiquetados</p>
+                    <div class="info-icon">🔬</div>
+                    <h4>Tipo de Aprendizaje</h4>
+                    <p><strong>Supervisado</strong></p>
+                    <p class="info-desc">Aprende de ejemplos etiquetados con respuestas correctas</p>
                 </div>
                 <div class="info-box">
-                    <h4>✅ Ventajas</h4>
-                    <p>Rápido, interpretable, ideal para relaciones lineales</p>
+                    <div class="info-icon">✅</div>
+                    <h4>Ventajas</h4>
+                    <ul class="ventajas-list">
+                        <li>⚡ Rápido y eficiente</li>
+                        <li>📖 Fácil de interpretar</li>
+                        <li>🎯 Preciso para patrones lineales</li>
+                        <li>💾 Poco uso de recursos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Aplicaciones prácticas -->
+            <div class="aplicaciones-card">
+                <h4>🏥 Aplicaciones en el Sector Salud</h4>
+                <div class="aplicaciones-grid">
+                    <div class="aplicacion-item">
+                        <span class="app-icon">👨‍⚕️</span>
+                        <h5>Personal Médico</h5>
+                        <p>Planificar turnos según demanda esperada</p>
+                    </div>
+                    <div class="aplicacion-item">
+                        <span class="app-icon">💊</span>
+                        <h5>Insumos</h5>
+                        <p>Asegurar stock suficiente de medicamentos</p>
+                    </div>
+                    <div class="aplicacion-item">
+                        <span class="app-icon">🛏️</span>
+                        <h5>Camas</h5>
+                        <p>Gestionar disponibilidad de camas</p>
+                    </div>
+                    <div class="aplicacion-item">
+                        <span class="app-icon">💰</span>
+                        <h5>Presupuesto</h5>
+                        <p>Optimizar costos operacionales</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -653,6 +653,279 @@ body {
     color: #155724;
 }
 
+/* Gráfico de tendencias */
+.chart-container {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+#chartHistorico {
+    display: block;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+}
+
+.data-details {
+    margin-top: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-details summary {
+    background: #f3f4f6;
+    padding: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #667eea;
+    transition: background 0.3s;
+}
+
+.data-details summary:hover {
+    background: #e5e7eb;
+}
+
+.data-details[open] summary {
+    background: #667eea;
+    color: white;
+}
+
+.data-details .data-table {
+    margin: 0;
+}
+
+/* Proceso visual */
+.proceso-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.paso-proceso {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 5px solid #667eea;
+    transition: transform 0.3s;
+}
+
+.paso-proceso:hover {
+    transform: translateX(10px);
+}
+
+.paso-numero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.paso-contenido {
+    flex: 1;
+}
+
+.paso-contenido h4 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.paso-contenido p {
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.ejemplo-dato {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.dato-item {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.dato-resultado {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.formula-visual {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.formula-texto {
+    color: #666;
+    font-weight: 600;
+}
+
+.formula-var {
+    background: #667eea;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.ejemplo-prediccion {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.pred-input, .pred-output {
+    padding: 0.8rem;
+    border-radius: 8px;
+}
+
+.pred-input {
+    background: white;
+    border: 2px solid #667eea;
+    flex: 1;
+    min-width: 200px;
+}
+
+.pred-output {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    flex: 1;
+    min-width: 200px;
+}
+
+.pred-arrow {
+    font-size: 2rem;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.flecha-proceso {
+    text-align: center;
+    font-size: 2rem;
+    color: #667eea;
+    margin: 0.5rem 0;
+}
+
+/* Info boxes mejorados */
+.info-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-desc {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+
+.variables-list, .ventajas-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.5rem;
+}
+
+.variables-list li, .ventajas-list li {
+    padding: 0.5rem 0;
+    color: #666;
+    border-bottom: 1px solid #eee;
+}
+
+.variables-list li:last-child, .ventajas-list li:last-child {
+    border-bottom: none;
+}
+
+/* Aplicaciones card */
+.aplicaciones-card {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    border-radius: 10px;
+    border-left: 5px solid #0ea5e9;
+}
+
+.aplicaciones-card h4 {
+    color: #0c4a6e;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.aplicaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.aplicacion-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.aplicacion-item:hover {
+    transform: translateY(-5px);
+}
+
+.app-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.aplicacion-item h5 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.aplicacion-item p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 /* Footer */
 footer {
     background: rgba(255, 255, 255, 0.95);
@@ -687,4 +960,119 @@ footer p {
     .form-row {
         grid-template-columns: 1fr;
     }
+
+    .paso-proceso {
+        flex-direction: column;
+    }
+
+    .ejemplo-prediccion {
+        flex-direction: column;
+    }
+
+    .pred-arrow {
+        transform: rotate(90deg);
+    }
+
+    .aplicaciones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .proceso-prediccion {
+        flex-direction: column;
+    }
+}
+
+/* Proceso de predicción */
+.proceso-prediccion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.paso-pred {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.paso-pred-num {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.paso-pred-contenido {
+    flex: 1;
+}
+
+.paso-pred-contenido h5 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.paso-pred-contenido p {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.caracteristicas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.caract-item {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.formula-simple {
+    background: #f3f4f6;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-family: monospace;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+/* Gráfico de predicciones */
+.chart-predicciones {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.chart-predicciones h4 {
+    color: #667eea;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+#chartPredicciones {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
 }

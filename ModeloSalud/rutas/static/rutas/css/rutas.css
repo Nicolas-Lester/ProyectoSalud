@@ -330,20 +330,86 @@ body {
     border-left: 3px solid #667eea;
 }
 
-.info-algoritmo {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #e3f2fd;
-    border-radius: 8px;
+.sistema-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-.info-algoritmo h4 {
-    color: #1976d2;
+.info-seccion h4,
+.info-algoritmo h4,
+.aplicaciones-info h4 {
+    color: #667eea;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.info-algoritmo {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 100%);
+    border-radius: 10px;
+}
+
+.ventajas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ventaja-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.ventaja-item:hover {
+    transform: translateY(-5px);
+}
+
+.ventaja-item .icono {
+    font-size: 2rem;
+    display: block;
     margin-bottom: 0.5rem;
 }
 
-.info-algoritmo p {
-    line-height: 1.6;
+.ventaja-item h5 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.ventaja-item p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.aplicaciones-info {
+    padding: 1.5rem;
+    background: #f0fdf4;
+    border-radius: 10px;
+}
+
+.aplicaciones-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.aplicaciones-lista li {
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #10b981;
+    line-height: 1.5;
+}
+
+.aplicaciones-lista strong {
+    color: #065f46;
 }
 
 footer {
@@ -359,6 +425,244 @@ footer {
 footer p {
     color: #666;
     font-size: 0.9rem;
+}
+
+/* Estilos para el mapa visual */
+.mapa-visual {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.mapa-visual h4 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.explicacion-mapa {
+    text-align: center;
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+#mapaCanvas {
+    display: block;
+    margin: 1rem auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 100%;
+    height: auto;
+}
+
+.leyenda-mapa {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.leyenda-mapa div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.color-box.origen {
+    background: #3b82f6;
+}
+
+.color-box.destino {
+    background: #ef4444;
+}
+
+.color-box.ruta-optima {
+    background: #10b981;
+}
+
+.color-box.otras-rutas {
+    background: #ddd;
+}
+
+/* Explicación simplificada */
+.explicacion-simple {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    border-radius: 10px;
+    border-left: 5px solid #3b82f6;
+}
+
+.explicacion-simple h4 {
+    color: #1e40af;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.texto-simple {
+    color: #334155;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.pasos-simples {
+    display: grid;
+    gap: 1rem;
+}
+
+.paso-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.paso-item:hover {
+    transform: translateX(5px);
+}
+
+.paso-num {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.paso-desc {
+    flex: 1;
+    line-height: 1.6;
+}
+
+.paso-desc strong {
+    color: #667eea;
+}
+
+/* Comparación de rutas */
+.comparacion-rutas {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 10px;
+    border-left: 5px solid #f59e0b;
+}
+
+.comparacion-rutas h4 {
+    color: #92400e;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.texto-comparacion {
+    color: #78350f;
+    margin-bottom: 1rem;
+}
+
+.tabla-comparacion {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tabla-comparacion thead {
+    background: #f59e0b;
+    color: white;
+}
+
+.tabla-comparacion th,
+.tabla-comparacion td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #fef3c7;
+}
+
+.tabla-comparacion .ruta-optima-row {
+    background: #d1fae5;
+    font-weight: 600;
+}
+
+.tabla-comparacion .ruta-optima-row td {
+    color: #065f46;
+}
+
+.tabla-comparacion tbody tr:not(.ruta-optima-row):hover {
+    background: #fffbeb;
+}
+
+.diferencia {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.conclusion {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    color: #78350f;
+    border-left: 4px solid #10b981;
+}
+
+.conclusion strong {
+    color: #065f46;
+}
+
+/* Detalles técnicos colapsables */
+.detalles-algoritmo {
+    margin-top: 2rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.detalles-algoritmo summary {
+    background: #f3f4f6;
+    padding: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #667eea;
+    transition: background 0.3s;
+}
+
+.detalles-algoritmo summary:hover {
+    background: #e5e7eb;
+}
+
+.detalles-algoritmo[open] summary {
+    background: #667eea;
+    color: white;
+}
+
+.detalles-algoritmo .pasos-algoritmo {
+    margin: 0;
+    border-radius: 0;
 }
 
 @media (max-width: 768px) {
@@ -381,5 +685,15 @@ footer p {
     
     .result-summary {
         flex-direction: column;
+    }
+
+    #mapaCanvas {
+        width: 100%;
+        height: auto;
+    }
+
+    .leyenda-mapa {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }

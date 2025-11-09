@@ -36,7 +36,7 @@ def entrenar(request):
         # Verificar que haya suficientes comentarios
         if comentarios.count() < 10:
             messages.error(request, 'Necesitas al menos 10 comentarios para entrenar el modelo.')
-            return redirect('home')
+            return redirect('sentimientos_home')
         
         # Convertir comentarios a formato DataFrame (tabla)
         datos = list(comentarios.values('texto', 'etiqueta'))
@@ -48,7 +48,7 @@ def entrenar(request):
         # Mostrar mensaje de exito con la precision
         precision = resultado["accuracy_test"]
         messages.success(request, f'Modelo entrenado exitosamente. Precisión: {precision:.2%}')
-        return redirect('home')
+        return redirect('sentimientos_home')
     
     # Si no es POST, mostrar la pagina
     return render(request, 'sentimientos/entrenar.html')

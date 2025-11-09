@@ -88,6 +88,21 @@
                         </div>
                     </div>
 
+                    <!-- NUEVO: Mapa Visual del Sistema -->
+                    <div class="mapa-visual">
+                        <h4>🗺️ Mapa Visual del Sistema de Distribución</h4>
+                        <p class="explicacion-mapa">
+                            <strong>Ruta óptima resaltada en VERDE</strong> | Todas las conexiones disponibles en gris
+                        </p>
+                        <canvas id="mapaCanvas" width="800" height="500"></canvas>
+                        <div class="leyenda-mapa">
+                            <div><span class="color-box origen"></span> Origen ({{ origen }})</div>
+                            <div><span class="color-box destino"></span> Destino ({{ destino }})</div>
+                            <div><span class="color-box ruta-optima"></span> Ruta Óptima</div>
+                            <div><span class="color-box otras-rutas"></span> Otras Conexiones</div>
+                        </div>
+                    </div>
+
                     <div class="ruta-visual">
                         <h4>📍 Recorrido Paso a Paso:</h4>
                         <div class="camino">
@@ -103,52 +118,249 @@
                         </div>
                     </div>
 
-                    <div class="pasos-algoritmo">
-                        <h4>🔍 Proceso del Algoritmo A* (Pasos de Exploración):</h4>
-                        <p class="explicacion">
-                            El algoritmo A* explora los nodos más prometedores primero, 
-                            usando la fórmula: <strong>f(n) = g(n) + h(n)</strong><br>
-                            • <strong>g(n)</strong> = Costo real desde el origen<br>
-                            • <strong>h(n)</strong> = Heurística (estimación al destino)<br>
-                            • <strong>f(n)</strong> = Costo total estimado
+                    <!-- Explicación simplificada -->
+                    <div class="explicacion-simple">
+                        <h4>💡 ¿Cómo funciona el Algoritmo A*?</h4>
+                        <p class="texto-simple">
+                            El algoritmo A* encuentra la ruta más corta explorando de forma inteligente:
                         </p>
-                        
-                        <table class="tabla-pasos">
+                        <div class="pasos-simples">
+                            <div class="paso-item">
+                                <span class="paso-num">1</span>
+                                <div class="paso-desc">
+                                    <strong>Comienza</strong> en "{{ origen }}" y calcula distancias a todos sus vecinos
+                                </div>
+                            </div>
+                            <div class="paso-item">
+                                <span class="paso-num">2</span>
+                                <div class="paso-desc">
+                                    <strong>Prioriza</strong> rutas que lo acercan más al destino usando una estimación inteligente
+                                </div>
+                            </div>
+                            <div class="paso-item">
+                                <span class="paso-num">3</span>
+                                <div class="paso-desc">
+                                    <strong>Explora</strong> paso a paso hasta encontrar "{{ destino }}" por el camino más corto
+                                </div>
+                            </div>
+                            <div class="paso-item">
+                                <span class="paso-num">✓</span>
+                                <div class="paso-desc">
+                                    <strong>Resultado:</strong> {{ resultado.costo_total }} km (la distancia más corta posible)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparación de rutas alternativas -->
+                    {% if rutas_alternativas %}
+                    <div class="comparacion-rutas">
+                        <h4>📊 Comparación con Rutas Alternativas</h4>
+                        <p class="texto-comparacion">
+                            A* encuentra la ruta más corta. Aquí puedes ver otras rutas posibles y por qué son más largas:
+                        </p>
+                        <table class="tabla-comparacion">
                             <thead>
                                 <tr>
-                                    <th>Paso</th>
-                                    <th>Nodo Explorado</th>
-                                    <th>Costo Acumulado g(n)</th>
-                                    <th>Heurística h(n)</th>
-                                    <th>Total Estimado f(n)</th>
+                                    <th>Tipo</th>
+                                    <th>Ruta</th>
+                                    <th>Distancia</th>
+                                    <th>Diferencia</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for paso in resultado.pasos %}
-                                    <tr>
-                                        <td>{{ paso.paso }}</td>
-                                        <td class="nodo-nombre">{{ paso.nodo_explorado }}</td>
-                                        <td>{{ paso.costo_acumulado|floatformat:1 }} km</td>
-                                        <td>{{ paso.heuristica|floatformat:1 }} km</td>
-                                        <td><strong>{{ paso.costo_acumulado|add:paso.heuristica|floatformat:1 }} km</strong></td>
-                                    </tr>
+                                <tr class="ruta-optima-row">
+                                    <td><strong>✓ ÓPTIMA</strong></td>
+                                    <td>
+                                        {% for ubicacion in resultado.camino %}
+                                            {{ ubicacion }}{% if not forloop.last %} → {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td><strong>{{ resultado.costo_total }} km</strong></td>
+                                    <td>-</td>
+                                </tr>
+                                {% for ruta in rutas_alternativas %}
+                                <tr>
+                                    <td>Vía {{ ruta.via }}</td>
+                                    <td>
+                                        {% for ubicacion in ruta.camino %}
+                                            {{ ubicacion }}{% if not forloop.last %} → {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ ruta.costo }} km</td>
+                                    <td class="diferencia">+{{ ruta.costo|add:"-"|add:resultado.costo_total|floatformat:0 }} km</td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-
-                        <div class="explicacion-seleccion">
-                            <h4>📝 Cómo Funciona la Selección de Nodos:</h4>
-                            <ol>
-                                <li><strong>Inicio:</strong> El algoritmo comienza en "{{ origen }}" con costo 0</li>
-                                <li><strong>Exploración:</strong> En cada paso, selecciona el nodo con menor f(n) = g(n) + h(n)</li>
-                                <li><strong>Vecinos:</strong> Examina todos los vecinos del nodo actual</li>
-                                <li><strong>Actualización:</strong> Si encuentra un camino mejor, actualiza los costos</li>
-                                <li><strong>Priorización:</strong> Usa la heurística h(n) para priorizar nodos cercanos al destino</li>
-                                <li><strong>Fin:</strong> Termina cuando alcanza "{{ destino }}" con el costo mínimo</li>
-                            </ol>
-                        </div>
+                        <p class="conclusion">
+                            💡 <strong>Conclusión:</strong> La ruta óptima ahorra 
+                            {% with primera_alternativa=rutas_alternativas.0 %}
+                                {{ primera_alternativa.costo|add:"-"|add:resultado.costo_total|floatformat:0 }} km
+                            {% endwith %}
+                            comparado con la alternativa más cercana.
+                        </p>
                     </div>
+                    {% endif %}
+
+                    <!-- Tabla de pasos (colapsable para simplicidad) -->
+                    <details class="detalles-algoritmo">
+                        <summary>🔍 Ver detalles técnicos del algoritmo (opcional)</summary>
+                        <div class="pasos-algoritmo">
+                            <p class="explicacion">
+                                Fórmula utilizada: <strong>f(n) = g(n) + h(n)</strong><br>
+                                • <strong>g(n)</strong> = Distancia real recorrida desde el origen<br>
+                                • <strong>h(n)</strong> = Estimación de distancia restante al destino<br>
+                                • <strong>f(n)</strong> = Costo total estimado (el algoritmo elige el menor)
+                            </p>
+                            
+                            <table class="tabla-pasos">
+                                <thead>
+                                    <tr>
+                                        <th>Paso</th>
+                                        <th>Nodo Explorado</th>
+                                        <th>Distancia Real g(n)</th>
+                                        <th>Estimación h(n)</th>
+                                        <th>Total f(n)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for paso in resultado.pasos %}
+                                        <tr>
+                                            <td>{{ paso.paso }}</td>
+                                            <td class="nodo-nombre">{{ paso.nodo_explorado }}</td>
+                                            <td>{{ paso.costo_acumulado|floatformat:1 }} km</td>
+                                            <td>{{ paso.heuristica|floatformat:1 }} km</td>
+                                            <td><strong>{{ paso.costo_acumulado|add:paso.heuristica|floatformat:1 }} km</strong></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
                 </div>
+
+                <!-- Script para dibujar el mapa -->
+                <script>
+                    // Datos del grafo
+                    const ubicaciones = {
+                        'Hospital': {x: 0, y: 0},
+                        'Bodega Central': {x: 5, y: 3},
+                        'Centro Distribucion': {x: 3, y: 5},
+                        'Farmacia Principal': {x: 7, y: 2},
+                        'Almacen Regional': {x: 10, y: 6},
+                        'Fabrica Insumos': {x: 12, y: 8}
+                    };
+
+                    const conexiones = [
+                        ['Hospital', 'Bodega Central', 6],
+                        ['Hospital', 'Centro Distribucion', 7],
+                        ['Bodega Central', 'Farmacia Principal', 4],
+                        ['Bodega Central', 'Centro Distribucion', 3],
+                        ['Centro Distribucion', 'Almacen Regional', 8],
+                        ['Farmacia Principal', 'Almacen Regional', 5],
+                        ['Almacen Regional', 'Fabrica Insumos', 4]
+                    ];
+
+                    const rutaOptima = {{ resultado.camino|safe }};
+                    const origen = "{{ origen }}";
+                    const destino = "{{ destino }}";
+
+                    // Dibujar el mapa
+                    window.onload = function() {
+                        const canvas = document.getElementById('mapaCanvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Escala y offset para centrar el mapa
+                        const escala = 50;
+                        const offsetX = 80;
+                        const offsetY = 60;
+
+                        // Función para convertir coordenadas
+                        function coord(x, y) {
+                            return {
+                                x: x * escala + offsetX,
+                                y: canvas.height - (y * escala + offsetY)
+                            };
+                        }
+
+                        // Dibujar todas las conexiones en gris
+                        ctx.strokeStyle = '#ddd';
+                        ctx.lineWidth = 2;
+                        conexiones.forEach(([origen, destino, costo]) => {
+                            const inicio = coord(ubicaciones[origen].x, ubicaciones[origen].y);
+                            const fin = coord(ubicaciones[destino].x, ubicaciones[destino].y);
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(inicio.x, inicio.y);
+                            ctx.lineTo(fin.x, fin.y);
+                            ctx.stroke();
+
+                            // Mostrar distancia
+                            const midX = (inicio.x + fin.x) / 2;
+                            const midY = (inicio.y + fin.y) / 2;
+                            ctx.fillStyle = '#999';
+                            ctx.font = '11px Arial';
+                            ctx.fillText(costo + ' km', midX + 5, midY - 5);
+                        });
+
+                        // Dibujar la ruta óptima en VERDE
+                        ctx.strokeStyle = '#10b981';
+                        ctx.lineWidth = 5;
+                        for (let i = 0; i < rutaOptima.length - 1; i++) {
+                            const inicio = coord(ubicaciones[rutaOptima[i]].x, ubicaciones[rutaOptima[i]].y);
+                            const fin = coord(ubicaciones[rutaOptima[i + 1]].x, ubicaciones[rutaOptima[i + 1]].y);
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(inicio.x, inicio.y);
+                            ctx.lineTo(fin.x, fin.y);
+                            ctx.stroke();
+
+                            // Flecha direccional
+                            const angle = Math.atan2(fin.y - inicio.y, fin.x - inicio.x);
+                            const arrowSize = 10;
+                            ctx.fillStyle = '#10b981';
+                            ctx.beginPath();
+                            ctx.moveTo(fin.x, fin.y);
+                            ctx.lineTo(fin.x - arrowSize * Math.cos(angle - Math.PI/6), fin.y - arrowSize * Math.sin(angle - Math.PI/6));
+                            ctx.lineTo(fin.x - arrowSize * Math.cos(angle + Math.PI/6), fin.y - arrowSize * Math.sin(angle + Math.PI/6));
+                            ctx.closePath();
+                            ctx.fill();
+                        }
+
+                        // Dibujar los nodos
+                        Object.keys(ubicaciones).forEach(nombre => {
+                            const pos = coord(ubicaciones[nombre].x, ubicaciones[nombre].y);
+                            
+                            // Color según si es origen, destino u otro
+                            if (nombre === origen) {
+                                ctx.fillStyle = '#3b82f6'; // Azul - Origen
+                            } else if (nombre === destino) {
+                                ctx.fillStyle = '#ef4444'; // Rojo - Destino
+                            } else if (rutaOptima.includes(nombre)) {
+                                ctx.fillStyle = '#10b981'; // Verde - Parte de la ruta
+                            } else {
+                                ctx.fillStyle = '#6b7280'; // Gris - Otros
+                            }
+
+                            // Círculo del nodo
+                            ctx.beginPath();
+                            ctx.arc(pos.x, pos.y, 15, 0, Math.PI * 2);
+                            ctx.fill();
+
+                            // Borde blanco
+                            ctx.strokeStyle = '#fff';
+                            ctx.lineWidth = 3;
+                            ctx.stroke();
+
+                            // Etiqueta
+                            ctx.fillStyle = '#1f2937';
+                            ctx.font = 'bold 12px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(nombre, pos.x, pos.y + 30);
+                        });
+                    };
+                </script>
             {% else %}
                 <div class="result-card error">
                     <h3>❌ No se encontró una ruta</h3>
@@ -157,24 +369,56 @@
             {% endif %}
         {% endif %}
 
-        <!-- Información sobre el grafo -->
+        <!-- Información sobre el sistema -->
         <div class="info-card">
             <h3>ℹ️ Información del Sistema</h3>
-            <p><strong>Ubicaciones disponibles:</strong> {{ ubicaciones|length }}</p>
-            <ul class="ubicaciones-lista">
-                {% for ubicacion in ubicaciones %}
-                    <li>{{ ubicacion }}</li>
-                {% endfor %}
-            </ul>
             
-            <div class="info-algoritmo">
-                <h4>🧠 Sobre el Algoritmo A*:</h4>
-                <p>
-                    A* es un algoritmo de búsqueda informada que combina:<br>
-                    • <strong>Dijkstra:</strong> Encuentra el camino más corto garantizado<br>
-                    • <strong>Heurística:</strong> Optimiza la búsqueda priorizando direcciones prometedoras<br>
-                    • <strong>Eficiencia:</strong> Explora menos nodos que una búsqueda exhaustiva
-                </p>
+            <div class="sistema-info">
+                <div class="info-seccion">
+                    <h4>📍 Red de Distribución</h4>
+                    <p><strong>{{ ubicaciones|length }} ubicaciones</strong> conectadas en el sistema:</p>
+                    <ul class="ubicaciones-lista">
+                        {% for ubicacion in ubicaciones %}
+                            <li>{{ ubicacion }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="info-algoritmo">
+                    <h4>🧠 ¿Por qué usar el Algoritmo A*?</h4>
+                    <div class="ventajas-grid">
+                        <div class="ventaja-item">
+                            <span class="icono">🎯</span>
+                            <h5>Óptimo</h5>
+                            <p>Siempre encuentra la ruta más corta posible</p>
+                        </div>
+                        <div class="ventaja-item">
+                            <span class="icono">⚡</span>
+                            <h5>Eficiente</h5>
+                            <p>Explora menos caminos que otros algoritmos</p>
+                        </div>
+                        <div class="ventaja-item">
+                            <span class="icono">🧭</span>
+                            <h5>Inteligente</h5>
+                            <p>Usa heurística para priorizar rutas prometedoras</p>
+                        </div>
+                        <div class="ventaja-item">
+                            <span class="icono">✅</span>
+                            <h5>Garantizado</h5>
+                            <p>Resultado verificable y reproducible</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aplicaciones-info">
+                    <h4>🏥 Aplicaciones en Salud</h4>
+                    <ul class="aplicaciones-lista">
+                        <li><strong>Distribución de medicamentos:</strong> Entrega rápida a hospitales</li>
+                        <li><strong>Rutas de ambulancia:</strong> Caminos óptimos en emergencias</li>
+                        <li><strong>Logística de insumos:</strong> Reducción de costos y tiempo</li>
+                        <li><strong>Planificación de cadena de frío:</strong> Transporte eficiente de vacunas</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

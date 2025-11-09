@@ -160,25 +160,147 @@
                 </div>
             {% endif %}
 
-            <!-- Explicación del proceso -->
+            <!-- Explicación visual simplificada -->
             <div class="explanation-card">
                 <h4>🧠 ¿Cómo se calculó esta predicción?</h4>
-                <ol class="process-steps">
-                    <li>
-                        <strong>Entrada de datos:</strong> Se extrajo el día de la semana, mes y si es feriado
-                    </li>
-                    <li>
-                        <strong>Normalización:</strong> Los datos se escalaron usando StandardScaler
-                    </li>
-                    <li>
-                        <strong>Modelo de regresión:</strong> Se aplicó la fórmula:
-                        <code>y = β₀ + β₁·día + β₂·mes + β₃·feriado</code>
-                    </li>
-                    <li>
-                        <strong>Resultado:</strong> El modelo predijo el número de pacientes esperados
-                    </li>
-                </ol>
+                <div class="proceso-prediccion">
+                    <div class="paso-pred">
+                        <div class="paso-pred-num">1</div>
+                        <div class="paso-pred-contenido">
+                            <h5>📥 Extracción de Características</h5>
+                            <p>Se tomó la fecha y se extrajo:</p>
+                            <div class="caracteristicas">
+                                <span class="caract-item">Día de semana</span>
+                                <span class="caract-item">Mes del año</span>
+                                <span class="caract-item">¿Es feriado?</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paso-pred">
+                        <div class="paso-pred-num">2</div>
+                        <div class="paso-pred-contenido">
+                            <h5>🔢 Normalización</h5>
+                            <p>Los valores se ajustaron a una escala estándar para que el modelo los entienda mejor</p>
+                        </div>
+                    </div>
+                    <div class="paso-pred">
+                        <div class="paso-pred-num">3</div>
+                        <div class="paso-pred-contenido">
+                            <h5>🎯 Aplicación del Modelo</h5>
+                            <p>Se usó la fórmula aprendida del entrenamiento:</p>
+                            <div class="formula-simple">
+                                Pacientes = Base + Efecto_Día + Efecto_Mes - Reducción_Feriado
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paso-pred">
+                        <div class="paso-pred-num">✓</div>
+                        <div class="paso-pred-contenido">
+                            <h5>✨ Resultado Final</h5>
+                            <p>El modelo calculó el número esperado de pacientes basándose en patrones históricos</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Gráfico de comparación visual -->
+            {% if predicciones|length > 1 %}
+            <div class="chart-predicciones">
+                <h4>📊 Visualización de Predicciones</h4>
+                <canvas id="chartPredicciones" width="800" height="300"></canvas>
+            </div>
+
+            <script>
+                const predicciones = [
+                    {% for pred in predicciones %}
+                    {
+                        dia: '{{ pred.dia_nombre|slice:":3" }}',
+                        fecha: '{{ pred.fecha|date:"d/m" }}',
+                        pacientes: {{ pred.pacientes_predichos }},
+                        feriado: {% if pred.es_feriado %}true{% else %}false{% endif %}
+                    },
+                    {% endfor %}
+                ];
+
+                window.addEventListener('load', function() {
+                    const canvas = document.getElementById('chartPredicciones');
+                    if (!canvas) return;
+                    
+                    const ctx = canvas.getContext('2d');
+                    const padding = 50;
+                    const chartWidth = canvas.width - padding * 2;
+                    const chartHeight = canvas.height - padding * 2;
+                    
+                    const maxPacientes = Math.max(...predicciones.map(p => p.pacientes));
+                    const escalaY = chartHeight / maxPacientes;
+                    const barWidth = chartWidth / predicciones.length;
+                    
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Título
+                    ctx.fillStyle = '#333';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Predicción Semanal de Pacientes', canvas.width / 2, 25);
+                    
+                    // Líneas de referencia
+                    ctx.strokeStyle = '#e5e7eb';
+                    ctx.lineWidth = 1;
+                    for (let i = 0; i <= 4; i++) {
+                        const y = padding + (chartHeight / 4) * i;
+                        ctx.beginPath();
+                        ctx.moveTo(padding, y);
+                        ctx.lineTo(canvas.width - padding, y);
+                        ctx.stroke();
+                        
+                        ctx.fillStyle = '#666';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'right';
+                        const valor = Math.round(maxPacientes * (1 - i / 4));
+                        ctx.fillText(valor, padding - 10, y + 4);
+                    }
+                    
+                    // Dibujar barras
+                    predicciones.forEach((pred, index) => {
+                        const x = padding + index * barWidth + barWidth * 0.1;
+                        const barHeight = pred.pacientes * escalaY;
+                        const y = canvas.height - padding - barHeight;
+                        const actualBarWidth = barWidth * 0.8;
+                        
+                        // Gradiente para las barras
+                        const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
+                        if (pred.feriado) {
+                            gradient.addColorStop(0, '#f59e0b');
+                            gradient.addColorStop(1, '#d97706');
+                        } else {
+                            gradient.addColorStop(0, '#667eea');
+                            gradient.addColorStop(1, '#764ba2');
+                        }
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, y, actualBarWidth, barHeight);
+                        
+                        // Borde
+                        ctx.strokeStyle = '#fff';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x, y, actualBarWidth, barHeight);
+                        
+                        // Valor
+                        ctx.fillStyle = '#333';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(pred.pacientes, x + actualBarWidth / 2, y - 8);
+                        
+                        // Etiquetas
+                        ctx.fillStyle = '#666';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.fillText(pred.dia, x + actualBarWidth / 2, canvas.height - padding + 18);
+                        ctx.font = '10px Arial';
+                        ctx.fillText(pred.fecha, x + actualBarWidth / 2, canvas.height - padding + 32);
+                    });
+                });
+            </script>
+            {% endif %}
         </div>
         {% endif %}
 

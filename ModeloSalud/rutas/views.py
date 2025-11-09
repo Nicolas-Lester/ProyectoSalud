@@ -38,14 +38,36 @@ def calcular_ruta(request):
         # Ejecutar el algoritmo A*
         resultado = algoritmo_busqueda.buscar_ruta_optima(origen, destino)
         
-        # Obtener ubicaciones para el formulario
+        # Calcular todas las rutas alternativas para comparación
         ubicaciones = algoritmo_busqueda.obtener_ubicaciones()
+        rutas_alternativas = []
+        
+        if resultado['exito']:
+            for ubicacion in ubicaciones:
+                if ubicacion != origen and ubicacion != destino:
+                    # Calcular ruta pasando por esta ubicación intermedia
+                    ruta1 = algoritmo_busqueda.buscar_ruta_optima(origen, ubicacion)
+                    ruta2 = algoritmo_busqueda.buscar_ruta_optima(ubicacion, destino)
+                    
+                    if ruta1['exito'] and ruta2['exito']:
+                        costo_total = ruta1['costo_total'] + ruta2['costo_total']
+                        # Combinar caminos eliminando duplicados
+                        camino_completo = ruta1['camino'] + ruta2['camino'][1:]
+                        rutas_alternativas.append({
+                            'via': ubicacion,
+                            'costo': costo_total,
+                            'camino': camino_completo
+                        })
+            
+            # Ordenar por costo
+            rutas_alternativas.sort(key=lambda x: x['costo'])
         
         context = {
             'ubicaciones': ubicaciones,
             'resultado': resultado,
             'origen': origen,
             'destino': destino,
+            'rutas_alternativas': rutas_alternativas,
         }
         return render(request, 'rutas/home.html', context)
     
