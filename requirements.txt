@@ -5,6 +5,8 @@ scikit-learn==1.3.0
 joblib==1.3.2
 tensorflow==2.15.0
 nltk==3.8.1
+matplotlib>=3.7.0
+seaborn>=0.12.0
 # Base de datos (opcional, Django incluye SQLite por defecto)
 # Si necesitas PostgreSQL o MySQL, descomenta:
 # psycopg2-binary==2.9.9  # Para PostgreSQL

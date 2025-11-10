@@ -3,6 +3,8 @@ import os
 import joblib
 import pandas as pd
 from django.conf import settings
+import base64
+from io import BytesIO
 
 # Importar TensorFlow para la red neuronal
 import tensorflow as tf
@@ -18,6 +20,13 @@ STOPWORDS = set(stopwords.words("spanish"))  # palabras como "el", "la", "de", e
 # Para convertir texto en numeros que entienda la IA
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+
+# Para generar gráficos
+import matplotlib
+matplotlib.use('Agg')  # Backend sin interfaz gráfica
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Rutas donde se guardan el modelo y el vectorizador
 MODEL_PATH = os.path.join(settings.MODELS_DIR, "sentiment_model.h5")
@@ -131,8 +140,75 @@ def entrenar_modelo(df):
     # 9. Evaluar que tan bien funciona
     perdida, precision = modelo.evaluate(X_test, y_test, verbose=0)
     
-    # Devolver la precision (accuracy)
-    return {"accuracy_test": float(precision)}
+    # 10. Generar predicciones para métricas y gráficos
+    y_pred_prob = modelo.predict(X_test, verbose=0)
+    y_pred = (y_pred_prob > 0.5).astype(int).flatten()
+    
+    # 11. Generar matriz de confusión
+    cm = confusion_matrix(y_test, y_pred)
+    
+    # 12. Crear gráfico de matriz de confusión
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=['Negativo', 'Positivo'],
+                yticklabels=['Negativo', 'Positivo'])
+    plt.title('Matriz de Confusión', fontsize=16, fontweight='bold')
+    plt.ylabel('Valor Real', fontsize=12)
+    plt.xlabel('Predicción', fontsize=12)
+    plt.tight_layout()
+    
+    # Guardar gráfico en memoria
+    buffer_cm = BytesIO()
+    plt.savefig(buffer_cm, format='png', dpi=100, bbox_inches='tight')
+    buffer_cm.seek(0)
+    imagen_cm = base64.b64encode(buffer_cm.read()).decode('utf-8')
+    plt.close()
+    
+    # 13. Crear gráfico de métricas
+    # Calcular métricas adicionales
+    tn, fp, fn, tp = cm.ravel()
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+    precision_metric = tp / (tp + fp) if (tp + fp) > 0 else 0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+    f1_score = 2 * (precision_metric * recall) / (precision_metric + recall) if (precision_metric + recall) > 0 else 0
+    
+    # Crear gráfico de barras con las métricas
+    metricas = ['Precisión', 'Recall', 'F1-Score', 'Accuracy']
+    valores = [precision_metric, recall, f1_score, accuracy]
+    
+    plt.figure(figsize=(10, 6))
+    colores = ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+    barras = plt.bar(metricas, valores, color=colores, alpha=0.7, edgecolor='black', linewidth=1.5)
+    
+    # Añadir valores encima de las barras
+    for i, (metrica, valor) in enumerate(zip(metricas, valores)):
+        plt.text(i, valor + 0.02, f'{valor:.2%}', ha='center', va='bottom', fontsize=12, fontweight='bold')
+    
+    plt.title('Métricas del Modelo', fontsize=16, fontweight='bold')
+    plt.ylabel('Valor', fontsize=12)
+    plt.ylim(0, 1.1)
+    plt.grid(axis='y', alpha=0.3, linestyle='--')
+    plt.tight_layout()
+    
+    # Guardar gráfico en memoria
+    buffer_metricas = BytesIO()
+    plt.savefig(buffer_metricas, format='png', dpi=100, bbox_inches='tight')
+    buffer_metricas.seek(0)
+    imagen_metricas = base64.b64encode(buffer_metricas.read()).decode('utf-8')
+    plt.close()
+    
+    # Devolver la precision y los gráficos
+    return {
+        "accuracy_test": float(precision),
+        "grafico_confusion": imagen_cm,
+        "grafico_metricas": imagen_metricas,
+        "metricas": {
+            "precision": float(precision_metric),
+            "recall": float(recall),
+            "f1_score": float(f1_score),
+            "accuracy": float(accuracy)
+        }
+    }
 
 
 # Funcion para cargar el modelo ya entrenado
