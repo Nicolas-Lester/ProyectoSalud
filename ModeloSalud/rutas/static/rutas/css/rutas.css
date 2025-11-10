@@ -634,6 +634,33 @@ footer p {
     color: #065f46;
 }
 
+/* Estilos adicionales para tabla de comparación */
+.ruta-camino {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #495057;
+}
+
+.badge-optimo {
+    display: inline-block;
+    background: #28a745;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.badge-diferencia {
+    display: inline-block;
+    background: #ffc107;
+    color: #856404;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
 /* Detalles técnicos colapsables */
 .detalles-algoritmo {
     margin-top: 2rem;

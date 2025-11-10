@@ -43,6 +43,8 @@ def calcular_ruta(request):
         rutas_alternativas = []
         
         if resultado['exito']:
+            costo_optimo = resultado['costo_total']
+            
             for ubicacion in ubicaciones:
                 if ubicacion != origen and ubicacion != destino:
                     # Calcular ruta pasando por esta ubicación intermedia
@@ -51,12 +53,15 @@ def calcular_ruta(request):
                     
                     if ruta1['exito'] and ruta2['exito']:
                         costo_total = ruta1['costo_total'] + ruta2['costo_total']
+                        diferencia = costo_total - costo_optimo
+                        
                         # Combinar caminos eliminando duplicados
                         camino_completo = ruta1['camino'] + ruta2['camino'][1:]
                         rutas_alternativas.append({
                             'via': ubicacion,
                             'costo': costo_total,
-                            'camino': camino_completo
+                            'camino': camino_completo,
+                            'diferencia': diferencia
                         })
             
             # Ordenar por costo

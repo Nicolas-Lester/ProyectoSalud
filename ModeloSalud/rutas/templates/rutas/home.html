@@ -171,33 +171,31 @@
                             <tbody>
                                 <tr class="ruta-optima-row">
                                     <td><strong>✓ ÓPTIMA</strong></td>
-                                    <td>
+                                    <td class="ruta-camino">
                                         {% for ubicacion in resultado.camino %}
                                             {{ ubicacion }}{% if not forloop.last %} → {% endif %}
                                         {% endfor %}
                                     </td>
                                     <td><strong>{{ resultado.costo_total }} km</strong></td>
-                                    <td>-</td>
+                                    <td><span class="badge-optimo">-</span></td>
                                 </tr>
                                 {% for ruta in rutas_alternativas %}
                                 <tr>
-                                    <td>Vía {{ ruta.via }}</td>
-                                    <td>
+                                    <td><strong>Vía {{ ruta.via }}</strong></td>
+                                    <td class="ruta-camino">
                                         {% for ubicacion in ruta.camino %}
                                             {{ ubicacion }}{% if not forloop.last %} → {% endif %}
                                         {% endfor %}
                                     </td>
                                     <td>{{ ruta.costo }} km</td>
-                                    <td class="diferencia">+{{ ruta.costo|add:"-"|add:resultado.costo_total|floatformat:0 }} km</td>
+                                    <td><span class="badge-diferencia">+{{ ruta.diferencia|floatformat:1 }} km</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                         <p class="conclusion">
                             💡 <strong>Conclusión:</strong> La ruta óptima ahorra 
-                            {% with primera_alternativa=rutas_alternativas.0 %}
-                                {{ primera_alternativa.costo|add:"-"|add:resultado.costo_total|floatformat:0 }} km
-                            {% endwith %}
+                            <strong>{{ rutas_alternativas.0.diferencia|floatformat:1 }} km</strong>
                             comparado con la alternativa más cercana.
                         </p>
                     </div>
