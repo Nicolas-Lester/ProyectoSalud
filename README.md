@@ -48,7 +48,13 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. **Crear superusuario (opcional)**
+5. **Cargar datos históricos de pacientes**
+```bash
+python manage.py load_demanda --path ..\Datos_Demanda_Pacientes.csv
+```
+Este comando carga 90 días de datos históricos reales (agosto-noviembre 2025) en la base de datos.
+
+6. **Crear superusuario (opcional)**
 ```bash
 python manage.py createsuperuser
 ```
