@@ -75,25 +75,25 @@ WSGI_APPLICATION = 'ModeloSalud.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', 
         'NAME': BASE_DIR / 'db.sqlite3', 
     }
-}
+}"""
 
 
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', #motor de base de datos
         'NAME': 'Modelos', #Nombre de la base de datos
         'USER': 'postgres', 
-        'PASSWORD': 'Eternity', #contraseña de la base de datos/puede cambiar para el equipo 
+        'PASSWORD': 'Eternity', #contraseña de la base de datos/puede cambiar para el equipo # Contraseña base de datos de brandon: kokonian22
         'HOST': 'localhost', #para postgresql 
         'PORT': '5432',
     }
 }
-"""
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
