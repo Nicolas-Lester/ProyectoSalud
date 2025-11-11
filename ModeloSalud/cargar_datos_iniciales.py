@@ -147,8 +147,8 @@ def verificar_datos():
         print("   Muestra de registros:")
         for registro in DemandaPacientes.objects.all().order_by('fecha')[:3]:
             print(f"      - {registro.fecha}: {registro.pacientes} pacientes")
-            
-  """Función principal que ejecuta la carga de datos."""
+
+"""Función principal que ejecuta la carga de datos."""
 def main():  
     print("\n" + "="*60)
     print("CARGA INICIAL DE DATOS - ProyectoSalud")
