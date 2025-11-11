@@ -21,8 +21,9 @@ from sentimientos.models import Comment
 from prediccion.models import DemandaPacientes
 from datetime import datetime
 
+"""Carga comentarios de pacientes desde CSV a la base de datos."""
 def cargar_comentarios():
-    """Carga comentarios de pacientes desde CSV a la base de datos."""
+    
     print("\n" + "="*60)
     print("CARGANDO COMENTARIOS DE PACIENTES")
     print("="*60)
@@ -71,8 +72,8 @@ def cargar_comentarios():
         print(f"   ERROR al cargar comentarios: {str(e)}")
         return False
 
+"""Carga datos de demanda de pacientes desde CSV a la base de datos."""
 def cargar_demanda():
-    """Carga datos de demanda de pacientes desde CSV a la base de datos."""
     print("\n" + "="*60)
     print("CARGANDO DATOS DE DEMANDA DE PACIENTES")
     print("="*60)
@@ -123,9 +124,10 @@ def cargar_demanda():
     except Exception as e:
         print(f"   ERROR al cargar demanda: {str(e)}")
         return False
+    
 
+"""Verifica que los datos se hayan cargado correctamente."""
 def verificar_datos():
-    """Verifica que los datos se hayan cargado correctamente."""
     print("\n" + "="*60)
     print("VERIFICACION DE DATOS")
     print("="*60)
@@ -145,9 +147,9 @@ def verificar_datos():
         print("   Muestra de registros:")
         for registro in DemandaPacientes.objects.all().order_by('fecha')[:3]:
             print(f"      - {registro.fecha}: {registro.pacientes} pacientes")
-
-def main():
-    """Función principal que ejecuta la carga de datos."""
+            
+  """Función principal que ejecuta la carga de datos."""
+def main():  
     print("\n" + "="*60)
     print("CARGA INICIAL DE DATOS - ProyectoSalud")
     print("="*60)
@@ -174,16 +176,10 @@ def main():
     if exito_comentarios and exito_demanda:
         print("CARGA COMPLETADA EXITOSAMENTE")
         print("="*60)
-        print("\nProximos pasos:")
-        print("1. Ejecuta: python manage.py runserver")
-        print("2. Abre: http://127.0.0.1:8000/")
-        print("3. Entrena los modelos desde la interfaz web")
+
     else:
         print("CARGA COMPLETADA CON ERRORES")
         print("="*60)
-        print("\nRevisa los mensajes de error arriba.")
-        print("Puedes intentar ejecutar este script de nuevo.")
-    print("\n")
 
 if __name__ == "__main__":
     try:
