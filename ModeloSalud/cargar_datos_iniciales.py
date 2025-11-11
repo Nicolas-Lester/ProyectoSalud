@@ -24,7 +24,7 @@ from datetime import datetime
 def cargar_comentarios():
     """Carga comentarios de pacientes desde CSV a la base de datos."""
     print("\n" + "="*60)
-    print("📂 CARGANDO COMENTARIOS DE PACIENTES")
+    print("CARGANDO COMENTARIOS DE PACIENTES")
     print("="*60)
     
     # Ruta al CSV (ajusta si es necesario)
@@ -35,7 +35,7 @@ def cargar_comentarios():
     )
     
     if not os.path.exists(csv_path):
-        print(f"❌ ERROR: No se encontró el archivo: {csv_path}")
+        print(f"ERROR: No se encontro el archivo: {csv_path}")
         return False
     
     try:
@@ -61,20 +61,20 @@ def cargar_comentarios():
                 else:
                     contador_duplicados += 1
         
-        print(f"   ✅ Comentarios nuevos: {contador_nuevos}")
+        print(f"   Comentarios nuevos: {contador_nuevos}")
         if contador_duplicados > 0:
-            print(f"   ⚠️  Duplicados omitidos: {contador_duplicados}")
-        print(f"   📊 Total en BD: {Comment.objects.count()}")
+            print(f"   Duplicados omitidos: {contador_duplicados}")
+        print(f"   Total en BD: {Comment.objects.count()}")
         return True
     
     except Exception as e:
-        print(f"   ❌ ERROR al cargar comentarios: {str(e)}")
+        print(f"   ERROR al cargar comentarios: {str(e)}")
         return False
 
 def cargar_demanda():
     """Carga datos de demanda de pacientes desde CSV a la base de datos."""
     print("\n" + "="*60)
-    print("📂 CARGANDO DATOS DE DEMANDA DE PACIENTES")
+    print("CARGANDO DATOS DE DEMANDA DE PACIENTES")
     print("="*60)
     
     # Ruta al CSV (ajusta si es necesario)
@@ -85,7 +85,7 @@ def cargar_demanda():
     )
     
     if not os.path.exists(csv_path):
-        print(f"❌ ERROR: No se encontró el archivo: {csv_path}")
+        print(f"ERROR: No se encontro el archivo: {csv_path}")
         return False
     
     try:
@@ -114,20 +114,20 @@ def cargar_demanda():
             else:
                 contador_duplicados += 1
         
-        print(f"   ✅ Registros nuevos: {contador_nuevos}")
+        print(f"   Registros nuevos: {contador_nuevos}")
         if contador_duplicados > 0:
-            print(f"   ⚠️  Duplicados omitidos: {contador_duplicados}")
-        print(f"   📊 Total en BD: {DemandaPacientes.objects.count()}")
+            print(f"   Duplicados omitidos: {contador_duplicados}")
+        print(f"   Total en BD: {DemandaPacientes.objects.count()}")
         return True
     
     except Exception as e:
-        print(f"   ❌ ERROR al cargar demanda: {str(e)}")
+        print(f"   ERROR al cargar demanda: {str(e)}")
         return False
 
 def verificar_datos():
     """Verifica que los datos se hayan cargado correctamente."""
     print("\n" + "="*60)
-    print("🔍 VERIFICACIÓN DE DATOS")
+    print("VERIFICACION DE DATOS")
     print("="*60)
     
     # Verificar comentarios
@@ -149,14 +149,14 @@ def verificar_datos():
 def main():
     """Función principal que ejecuta la carga de datos."""
     print("\n" + "="*60)
-    print("🚀 CARGA INICIAL DE DATOS - ProyectoSalud")
+    print("CARGA INICIAL DE DATOS - ProyectoSalud")
     print("="*60)
-    print("\nEste script cargará los datos desde los archivos CSV a PostgreSQL.")
-    print("Solo debes ejecutarlo UNA VEZ durante la instalación inicial.\n")
+    print("\nEste script cargara los datos desde los archivos CSV a PostgreSQL.")
+    print("Solo debes ejecutarlo UNA VEZ durante la instalacion inicial.\n")
     
-    respuesta = input("¿Deseas continuar? (s/n): ").lower()
+    respuesta = input("Deseas continuar? (s/n): ").lower()
     if respuesta != 's':
-        print("\n❌ Operación cancelada.")
+        print("\nOperacion cancelada.")
         return
     
     # Cargar comentarios
@@ -172,14 +172,14 @@ def main():
     # Mensaje final
     print("\n" + "="*60)
     if exito_comentarios and exito_demanda:
-        print("🎉 ¡CARGA COMPLETADA EXITOSAMENTE!")
+        print("CARGA COMPLETADA EXITOSAMENTE")
         print("="*60)
-        print("\nPróximos pasos:")
+        print("\nProximos pasos:")
         print("1. Ejecuta: python manage.py runserver")
         print("2. Abre: http://127.0.0.1:8000/")
         print("3. Entrena los modelos desde la interfaz web")
     else:
-        print("⚠️  CARGA COMPLETADA CON ERRORES")
+        print("CARGA COMPLETADA CON ERRORES")
         print("="*60)
         print("\nRevisa los mensajes de error arriba.")
         print("Puedes intentar ejecutar este script de nuevo.")
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n❌ Operación cancelada por el usuario.")
+        print("\n\nOperacion cancelada por el usuario.")
     except Exception as e:
-        print(f"\n\n❌ ERROR INESPERADO: {str(e)}")
+        print(f"\n\nERROR INESPERADO: {str(e)}")
         print("Contacta al desarrollador si el problema persiste.")
