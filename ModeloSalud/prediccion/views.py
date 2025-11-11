@@ -73,10 +73,16 @@ def entrenar_prediccion(request):
                 request,
                 f'Modelo entrenado exitosamente. Precisión: {score_porcentaje:.1f}%'
             )
+            
+            # Pasar los gráficos a la plantilla
+            context = {
+                'resultado': resultado,
+                'entrenado': True
+            }
+            return render(request, 'prediccion/entrenar.html', context)
         else:
             messages.error(request, resultado.get('error', 'Error al entrenar'))
-        
-        return redirect('prediccion_home')
+            return redirect('prediccion_home')
     
     return render(request, 'prediccion/entrenar.html')
 

@@ -24,6 +24,7 @@
             <p>Regresión lineal para predicción de demanda</p>
         </div>
 
+        {% if not entrenado %}
         <div class="confirm-card">
             <div class="confirm-icon">🤖</div>
             <h3>Entrenar modelo de regresión lineal</h3>
@@ -44,6 +45,57 @@
                 <a href="{% url 'prediccion_home' %}" class="btn btn-secondary">Cancelar</a>
             </form>
         </div>
+        {% else %}
+        
+        <!-- Resultados del entrenamiento -->
+        <div class="results-container" style="margin-top: 30px;">
+            <h2 style="color: #2ecc71; text-align: center;">✅ Modelo Entrenado Exitosamente</h2>
+            
+            <div class="metrics-summary" style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3 style="text-align: center;">📊 Métricas del Modelo</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <strong>R² Score:</strong><br>{{ resultado.metricas.r2_score|floatformat:3 }}
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <strong>MAE:</strong><br>{{ resultado.metricas.mae|floatformat:2 }} pacientes
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <strong>RMSE:</strong><br>{{ resultado.metricas.rmse|floatformat:2 }} pacientes
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <strong>Precisión Entrenamiento:</strong><br>{% widthratio resultado.metricas.precision_train 1 100 %}%
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                        <strong>Precisión Prueba:</strong><br>{% widthratio resultado.metricas.precision_test 1 100 %}%
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gráfico de Predicciones vs Valores Reales -->
+            <div class="chart-container" style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                <h3>Predicciones vs Valores Reales</h3>
+                <img src="data:image/png;base64,{{ resultado.grafico_predicciones }}" alt="Predicciones vs Valores Reales" style="max-width: 100%; height: auto;">
+            </div>
+            
+            <!-- Gráfico de Métricas -->
+            <div class="chart-container" style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                <h3>Métricas del Modelo</h3>
+                <img src="data:image/png;base64,{{ resultado.grafico_metricas }}" alt="Métricas del Modelo" style="max-width: 100%; height: auto;">
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{% url 'prediccion_home' %}" class="btn" style="font-size: 16px; padding: 12px 30px;">
+                    🏠 Volver al Inicio
+                </a>
+                <a href="{% url 'hacer_prediccion' %}" class="btn btn-success" style="font-size: 16px; padding: 12px 30px;">
+                    🔮 Hacer Predicciones
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

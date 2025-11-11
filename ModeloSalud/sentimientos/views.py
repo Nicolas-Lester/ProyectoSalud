@@ -48,7 +48,13 @@ def entrenar(request):
         # Mostrar mensaje de exito con la precision
         precision = resultado["accuracy_test"]
         messages.success(request, f'Modelo entrenado exitosamente. Precisión: {precision:.2%}')
-        return redirect('sentimientos_home')
+        
+        # Pasar los gráficos a la plantilla
+        context = {
+            'resultado': resultado,
+            'entrenado': True
+        }
+        return render(request, 'sentimientos/entrenar.html', context)
     
     # Si no es POST, mostrar la pagina
     return render(request, 'sentimientos/entrenar.html')

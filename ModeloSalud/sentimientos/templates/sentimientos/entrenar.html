@@ -34,6 +34,7 @@
         <p>Se necesitan al menos 10 comentarios para entrenar el modelo.</p>
     </div>
     
+    {% if not entrenado %}
     <form method="post" style="margin-top: 30px;">
         {% csrf_token %}
         <button type="submit" class="btn" style="font-size: 18px; padding: 15px 40px;">
@@ -42,5 +43,51 @@
         <br><br>
         <a href="{% url 'sentimientos_home' %}" class="btn btn-secondary">Cancelar</a>
     </form>
+    {% else %}
+    
+    <!-- Resultados del entrenamiento -->
+    <div class="results-container" style="margin-top: 30px;">
+        <h2>✅ Resultados del Entrenamiento</h2>
+        
+        <div class="metrics-summary" style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3>📊 Métricas del Modelo</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>Accuracy:</strong> {% widthratio resultado.metricas.accuracy 1 100 %}%
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>Precisión:</strong> {% widthratio resultado.metricas.precision 1 100 %}%
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>Recall:</strong> {% widthratio resultado.metricas.recall 1 100 %}%
+                </div>
+                <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>F1-Score:</strong> {% widthratio resultado.metricas.f1_score 1 100 %}%
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Matriz de Confusión -->
+        <div class="chart-container" style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+            <h3>Matriz de Confusión</h3>
+            <img src="data:image/png;base64,{{ resultado.grafico_confusion }}" alt="Matriz de Confusión" style="max-width: 100%; height: auto;">
+        </div>
+        
+        <!-- Gráfico de Métricas -->
+        <div class="chart-container" style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+            <h3>Métricas del Modelo</h3>
+            <img src="data:image/png;base64,{{ resultado.grafico_metricas }}" alt="Métricas del Modelo" style="max-width: 100%; height: auto;">
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'sentimientos_home' %}" class="btn" style="font-size: 16px; padding: 12px 30px;">
+                🏠 Volver al Inicio
+            </a>
+            <a href="{% url 'predecir' %}" class="btn" style="font-size: 16px; padding: 12px 30px; background: #2ecc71;">
+                🔮 Probar Predicciones
+            </a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
