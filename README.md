@@ -25,65 +25,69 @@ Proyecto integral de IA que implementa **3 módulos avanzados** para optimizar s
 - PostgreSQL
 - Librerías: Django, TensorFlow, scikit-learn, pandas, nltk, joblib
 
-## 🚀 Instalación
+## 🚀 Instalación y Configuración
 
-1. **Clonar el repositorio**
+### Instalación Rápida
+
+Sigue la **[Guía de Setup Inicial](SETUP_INICIAL.md)** para configurar el proyecto desde cero.
+
+### Pasos Resumidos
+
+1. **Instalar dependencias**
 ```bash
 cd ProyectoSalud
+pip install -r requirements.txt
 ```
 
-2. **Instalar dependencias**
-```bash
-pip install django tensorflow scikit-learn pandas nltk joblib psycopg2
-```
-
-3. **Configurar la base de datos PostgreSQL**
+2. **Configurar PostgreSQL**
    - Crear base de datos llamada `Modelos`
-   - Ajustar credenciales en `ModeloSalud/settings.py` si es necesario
+   - Ajustar credenciales en `ModeloSalud/ModeloSalud/settings.py` si es necesario
 
-4. **Aplicar migraciones**
+3. **Aplicar migraciones**
 ```bash
 cd ModeloSalud
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. **Cargar datos históricos de pacientes**
+4. **Cargar datos iniciales** (solo la primera vez)
+
+Ver instrucciones detalladas en **[SETUP_INICIAL.md](SETUP_INICIAL.md)**
+
+Opción rápida con Django shell:
 ```bash
-python manage.py load_demanda --path ..\Datos_Demanda_Pacientes.csv
+python manage.py shell
 ```
-Este comando carga 90 días de datos históricos reales (agosto-noviembre 2025) en la base de datos.
+Luego copiar y pegar el código de carga del archivo `SETUP_INICIAL.md`.
 
-6. **Crear superusuario (opcional)**
-```bash
-python manage.py createsuperuser
-```
-
-## 📊 Cargar datos
-
-Cargar comentarios desde el archivo CSV:
-
-```bash
-python manage.py load_comments --path ..\Comentarios_de_pacientes.csv
-```
-
-## 🎮 Uso
-
-1. **Iniciar el servidor**
+5. **Iniciar el servidor**
 ```bash
 python manage.py runserver
 ```
 
-2. **Abrir en el navegador**
+6. **Abrir en el navegador**
 ```
-http://localhost:8000
+http://127.0.0.1:8000/
 ```
 
-3. **Flujo de trabajo:**
-   - Ver los comentarios cargados
-   - Entrenar el modelo con los datos
-   - Usar la función de predicción para clasificar nuevos comentarios
-   - Buscar y filtrar comentarios por sentimiento
+## 🎮 Uso del Sistema
+
+### Módulo 1: Análisis de Sentimientos
+1. Acceder a http://127.0.0.1:8000/sentimientos/
+2. **Entrenar modelo** (primera vez)
+3. **Predecir** sentimiento de nuevos comentarios
+4. **Buscar** y filtrar comentarios existentes
+
+### Módulo 2: Predicción de Demanda
+1. Acceder a http://127.0.0.1:8000/prediccion/
+2. **Entrenar modelo** (primera vez)
+3. **Predecir** demanda para días específicos o semanas completas
+4. Ver **histórico** de datos
+
+### Módulo 3: Optimización de Rutas
+1. Acceder a http://127.0.0.1:8000/rutas/
+2. Seleccionar **origen** y **destino**
+3. Ver **ruta óptima** con visualización
+4. Comparar con **rutas alternativas**
 
 ## 📁 Estructura del Proyecto
 
@@ -110,17 +114,14 @@ ProyectoSalud/
 │       │           ├── predecir.css # Estilos para predicción
 │       │           ├── buscar.css   # Estilos para búsqueda
 │       │           └── listar.css   # Estilos para listado
-│       ├── templates/               # Templates HTML
-│       │   └── sentimientos/
-│       │       ├── base.html        # Template base
-│       │       ├── home.html        # Página principal
-│       │       ├── entrenar.html    # Entrenar modelo
-│       │       ├── predecir.html    # Predecir sentimiento
-│       │       ├── buscar.html      # Buscar comentarios
-│       │       └── listar.html      # Listar comentarios
-│       └── management/
-│           └── commands/
-│               └── load_comments.py # Comando para cargar CSV
+│       └── templates/               # Templates HTML
+│           └── sentimientos/
+│               ├── base.html        # Template base
+│               ├── home.html        # Página principal
+│               ├── entrenar.html    # Entrenar modelo
+│               ├── predecir.html    # Predecir sentimiento
+│               ├── buscar.html      # Buscar comentarios
+│               └── listar.html      # Listar comentarios
 ```
 
 ## 🧠 Metodología de Inteligencia Artificial
