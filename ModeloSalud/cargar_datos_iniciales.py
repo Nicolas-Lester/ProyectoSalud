@@ -72,6 +72,10 @@ def cargar_comentarios():
         print(f"   ERROR al cargar comentarios: {str(e)}")
         return False
 
+
+#datos de demanda de prediccion de pacientes 
+#==========================================================================
+
 """Carga datos de demanda de pacientes desde CSV a la base de datos."""
 def cargar_demanda():
     print("\n" + "="*60)
